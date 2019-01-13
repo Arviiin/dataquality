@@ -79,6 +79,7 @@
         SELECT * FROM user WHERE username=#{username}
     </select>
     <insert id="reg" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user set username=#{username},password=#{password},company=#{company},email=#{email},telephone=#{telephone}
+        INSERT INTO user set username=#{username},password=#{password},
+            company=#{company},email=#{email},telephone=#{telephone},enabled=#{enabled}
     </insert>
 </mapper>

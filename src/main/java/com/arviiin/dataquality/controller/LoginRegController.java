@@ -4,8 +4,7 @@ import com.arviiin.dataquality.model.RespBean;
 import com.arviiin.dataquality.model.User;
 import com.arviiin.dataquality.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 登录注册Controller
@@ -38,8 +37,9 @@ public class LoginRegController {
         return new RespBean("error", "尚未登录，请登录!");
     }
 
-    @RequestMapping("/reg")
-    public RespBean reg(User user) {
+
+    @PostMapping("/reg")
+    public RespBean reg(@RequestBody User user) {
         int result = userService.reg(user);
         if (result == 0) {
             //成功
