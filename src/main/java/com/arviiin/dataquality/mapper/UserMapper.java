@@ -9,20 +9,27 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Select("SELECT * FROM tb_user WHERE id = #{id}")
+    @Select("SELECT * FROM user WHERE id = #{id}")
     User getUserById(Integer id);
 
-    /*@Select("SELECT * FROM tb_user")
+    /*@Select("SELECT * FROM user")
     public List<User> getUserList();*/
 
     public List<User> getUserList();//xml版本
 
-    @Insert("insert into tb_user(username, age, ctm) values(#{username}, #{age}, now())")
+    @Insert("insert into user(username, age, ctm) values(#{username}, #{age}, now())")
     public int add(User user);
 
-    @Update("UPDATE tb_user SET username = #{user.username} , age = #{user.age} WHERE id = #{id}")
+    @Update("UPDATE user SET username = #{user.username} , age = #{user.age} WHERE id = #{id}")
     public int update(@Param("id") Integer id, @Param("user") User user);
 
-    @Delete("DELETE from tb_user where id = #{id} ")
+    @Delete("DELETE from user where id = #{id} ")
     public int delete(Integer id);
+
+
+
+
+    User loadUserByUsername(@Param("username") String username);
+
+    long reg(User user);
 }

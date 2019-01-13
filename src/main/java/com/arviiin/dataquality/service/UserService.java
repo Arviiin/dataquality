@@ -15,4 +15,7 @@ public interface UserService {
     public int update(Integer id, User user);
 
     public int delete(Integer id);
+
+    public int reg(User user);
+
 }

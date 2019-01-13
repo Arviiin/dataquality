@@ -2,10 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.arviiin.dataquality.mapper.UserMapper" >
     <resultMap id="BaseResultMap" type="com.arviiin.dataquality.model.User" >
-        <id column="id" property="id" jdbcType="INTEGER" />
+        <!--<id column="id" property="id" jdbcType="INTEGER" />
         <result column="username" property="username" jdbcType="VARCHAR" />
         <result column="age" property="age" jdbcType="VARCHAR" />
-        <result column="ctm" property="ctm" jdbcType="TIMESTAMP"/>
+        <result column="ctm" property="ctm" jdbcType="TIMESTAMP"/>-->
+
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="company" property="nickname"/>
+        <result column="email" property="email"/>
+        <result column="telephone" property="telephone"/>
+        <result column="enabled" property="enabled"/>
+        <result column="createtime" property="createtime"/>
+        <result column="updatetime" property="updatetime"/>
+        <collection property="roles" ofType="com.arviiin.dataquality.model.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+        </collection>
     </resultMap>
 
     <!--
@@ -13,7 +27,7 @@
         -->
 
     <select id="getUserList"  resultMap="BaseResultMap"  >
-        SELECT * FROM tb_user
+        SELECT * FROM user
     </select>
 
 
@@ -56,4 +70,15 @@
        		 id =#{id}
     </delete>-->
 
+
+
+
+
+
+    <select id="loadUserByUsername" resultType="com.arviiin.dataquality.model.User">
+        SELECT * FROM user WHERE username=#{username}
+    </select>
+    <insert id="reg" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user set username=#{username},password=#{password},company=#{company},email=#{email},telephone=#{telephone}
+    </insert>
 </mapper>

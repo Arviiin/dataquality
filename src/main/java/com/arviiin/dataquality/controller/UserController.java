@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
 public class UserController {
     @Autowired
     private UserService userService;

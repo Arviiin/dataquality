@@ -1,27 +1,25 @@
 package com.arviiin.dataquality.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.List;
 
 public class User {
-    private int id;
+    private Long id;
     private String username;
-    private int age;
-    private Date ctm;
+    private String password;
+    private String company;
+    private String email;
+    private String telephone;
+    private boolean enabled;
+    private List<Role> roles;
+    private Timestamp createtime;
+    private Timestamp updatetime;
 
-    public User() {
-    }
-
-    public User(String username, int age) {
-        this.username = username;
-        this.age = age;
-        this.ctm = new Date();
-    }
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -33,19 +31,67 @@ public class User {
         this.username = username;
     }
 
-    public int getAge() {
-        return age;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Date getCtm() {
-        return ctm;
+    public String getCompany() {
+        return company;
     }
 
-    public void setCtm(Date ctm) {
-        this.ctm = ctm;
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Timestamp getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Timestamp createtime) {
+        this.createtime = createtime;
+    }
+
+    public Timestamp getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Timestamp updatetime) {
+        this.updatetime = updatetime;
     }
 }
