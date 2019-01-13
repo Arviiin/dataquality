@@ -51,4 +51,15 @@ public class LoginRegController {
             return new RespBean("error", "注册失败!");
         }
     }
+
+
+    //登陆
+    //@RequestMapping(path = {"/login/"} ,method = {RequestMethod.POST})
+    @GetMapping("/login/{username}/{password}")
+    //public String login(@RequestParam("username") String username, @RequestParam("password") String password){
+    public String login(@PathVariable String username, @PathVariable String password){
+            //0成功  1用户名不存在  2密码错误
+            int loginResultCode = userService.login(username, password);
+            return loginResultCode+"";
+    }
 }

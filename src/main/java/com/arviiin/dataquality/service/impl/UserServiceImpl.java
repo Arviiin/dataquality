@@ -70,4 +70,23 @@ public class UserServiceImpl implements UserService {
             return 2;
         }
     }
+
+
+
+    //登陆
+    //0成功  1用户名不存在  2密码错误
+    public int login(String username, String password){
+        //判断用户名是否存在
+        User user = userMapper.loadUserByUsername(username);
+        if(user == null){
+//            respBean.setMsg("msg", "用户名不存在");
+            return 1;
+        }
+        if(!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())){
+//            map.put("msg","密码错误");
+            return 2;
+        }
+
+        return 0;
+    }
 }

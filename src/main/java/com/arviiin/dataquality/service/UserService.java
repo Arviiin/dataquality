@@ -18,4 +18,7 @@ public interface UserService {
 
     public int reg(User user);
 
+
+    public int login(String username, String password);
+
 }
