@@ -6,8 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 /**
  * 解决前后端跨域问题
- * @author lhy
- * @create 2018-05-27-18:06
  **/
 @Configuration
 public class CrosConfig extends WebMvcConfigurerAdapter {
@@ -19,5 +17,4 @@ public class CrosConfig extends WebMvcConfigurerAdapter {
                 .allowedMethods("GET", "POST", "DELETE", "PUT")
                 .maxAge(3600);
     }
-
 }
