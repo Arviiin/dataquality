@@ -15,19 +15,16 @@ public interface UserMapper {
     /*@Select("SELECT * FROM user")
     public List<User> getUserList();*/
 
-    public List<User> getUserList();//xml版本
+    List<User> getUserList();//xml版本
 
     @Insert("insert into user(username, age, ctm) values(#{username}, #{age}, now())")
-    public int add(User user);
+    int add(User user);
 
     @Update("UPDATE user SET username = #{user.username} , age = #{user.age} WHERE id = #{id}")
-    public int update(@Param("id") Integer id, @Param("user") User user);
+    int update(@Param("id") Integer id, @Param("user") User user);
 
     @Delete("DELETE from user where id = #{id} ")
-    public int delete(Integer id);
-
-
-
+    int delete(Integer id);
 
     User loadUserByUsername(@Param("username") String username);
 

@@ -10,7 +10,7 @@
         <id column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
-        <result column="company" property="nickname"/>
+        <result column="company" property="company"/>
         <result column="email" property="email"/>
         <result column="telephone" property="telephone"/>
         <result column="enabled" property="enabled"/>
@@ -80,6 +80,7 @@
     </select>
     <insert id="reg" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user set username=#{username},password=#{password},
-            company=#{company},email=#{email},telephone=#{telephone},enabled=#{enabled}
+            company=#{company},email=#{email},telephone=#{telephone},enabled=#{enabled},
+            createtime=#{createtime},updatetime=#{updatetime}
     </insert>
 </mapper>

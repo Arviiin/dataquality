@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService {
         //插入用户,插入之前先对密码进行加密
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         user.setEnabled(true);//用户可用
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setCreatetime(timestamp);
+        user.setUpdatetime(timestamp);
         long result = userMapper.reg(user);
         //配置用户的角色，默认都是普通用户
         String[] roles = new String[]{"2"};

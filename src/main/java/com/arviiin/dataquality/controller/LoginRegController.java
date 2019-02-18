@@ -37,9 +37,8 @@ public class LoginRegController {
         return new RespBean("error", "尚未登录，请登录!");
     }
 
-
     @PostMapping("/reg")
-    public RespBean reg(@RequestBody User user) {
+    public RespBean reg(@RequestBody User user) {//@RequestBody 用于将传入的参数转成bean
         int result = userService.reg(user);
         if (result == 0) {
             //成功
@@ -52,8 +51,12 @@ public class LoginRegController {
         }
     }
 
-
-    //登陆
+    /**
+     * 登录Controller ，
+     * @param username
+     * @param password
+     * @return
+     */
     //@RequestMapping(path = {"/login/"} ,method = {RequestMethod.POST})
     @GetMapping("/login/{username}/{password}")
     //public String login(@RequestParam("username") String username, @RequestParam("password") String password){
