@@ -46,4 +46,20 @@
     </select>
 
 
+    <insert id="saveDimensionResultData" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dimension set total_record_amount=#{dimensionResultBean.totalRecordAmount},
+                                   expected_total_record_amount=#{dimensionResultBean.expectedTotalRecordAmount},
+                                   data_file_completeness=#{dimensionResultBean.dataFileCompletenessResult},
+                                   data_value_completeness=#{dimensionResultBean.dataValueCompletenessResult},
+                                   referential_consistency=#{dimensionResultBean.referentialConsistencyResult},
+                                   format_consistency=#{dimensionResultBean.formatConsistencyResult},
+                                   data_record_compliance=#{dimensionResultBean.dataRecordComplianceResult},
+                                   range_accuracy=#{dimensionResultBean.rangeAccuracyResult},
+                                   record_uniqueness=#{dimensionResultBean.recordUniquenessResult},
+                                   time_based_timeliness=#{dimensionResultBean.timeBasedTimelinessResult},
+                                   data_non_vulnerability=#{dimensionResultBean.dataNonVulnerabilityResult},
+                                   createtime=#{dimensionResultBean.createtime}
+    </insert>
+
+
 </mapper>

@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.mapper;
 
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionResultBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,4 +41,5 @@ public interface DimensionMapper {
                                          @Param("endTime")String endTime);
 
 
+    void saveDimensionResultData(@Param("dimensionResultBean") DimensionResultBean dimensionResultBean);
 }

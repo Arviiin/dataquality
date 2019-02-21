@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.service;
 
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionResultBean;
 
 public interface DimensionService {
 
@@ -29,5 +30,7 @@ public interface DimensionService {
 
     Integer getTimeBasedTimelinessResult(DimensionBean dimensionBean);
 
-    Double getDataNonVulnerabilityResult(DimensionBean dimensionBean);
+    Integer getDataNonVulnerabilityResult(DimensionBean dimensionBean);
+
+    void saveDimensionResultData(DimensionResultBean dimensionResultBean);
 }

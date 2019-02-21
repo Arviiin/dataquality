@@ -20,6 +20,7 @@
 
         <setting name="defaultExecutorType" value="SIMPLE"/>
 
+        <!--设置开启驼峰命名mysql与javabean的映射关系-->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
 
         <setting name="localCacheScope" value="SESSION"/>

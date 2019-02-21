@@ -2,11 +2,13 @@ package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionMapper;
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.DimensionService;
 import com.arviiin.dataquality.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -113,19 +115,26 @@ public class DimensionServiceImpl implements DimensionService {
     }
 
     @Override
-    public Double getDataNonVulnerabilityResult(DimensionBean dimensionBean) {
+    public Integer getDataNonVulnerabilityResult(DimensionBean dimensionBean) {
         String type = dimensionBean.getRule();
-        double dataNonVulnerability;
+        int dataNonVulnerability;
         if ("明文".equals(type))
-            dataNonVulnerability = 0.5;
+            dataNonVulnerability = 50;
         else if ("加盐".equals(type))
-            dataNonVulnerability = 0.7;
+            dataNonVulnerability = 70;
         else if ("MD5等类型".equals(type))
-            dataNonVulnerability = 0.8;
+            dataNonVulnerability = 80;
         else if ("组合复杂".equals(type))
-            dataNonVulnerability = 0.9;
+            dataNonVulnerability = 90;
         else
-            dataNonVulnerability = 0.6;
+            dataNonVulnerability = 60;
         return dataNonVulnerability;
+    }
+
+    @Override
+    public void saveDimensionResultData(DimensionResultBean dimensionResultBean) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dimensionResultBean.setCreatetime(timestamp);
+        dimensionMapper.saveDimensionResultData(dimensionResultBean);
     }
 }
