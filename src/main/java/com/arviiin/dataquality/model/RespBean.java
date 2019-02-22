@@ -1,9 +1,13 @@
 package com.arviiin.dataquality.model;
 
+import java.io.Serializable;
+
 /**
  * Created by sang on 2017/12/17.
  */
-public class RespBean {
+public class RespBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String status;
     private String msg;
 

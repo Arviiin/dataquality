@@ -1,9 +1,14 @@
 package com.arviiin.dataquality.model;
 
+import java.io.Serializable;
+
 /**
  * dimensionname是指标名    tablename是表名，columnname是字段名，rule是规则约束
  */
-public class DimensionBean {
+public class DimensionBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String dimensionname;
     private String tablename;
     private String columnname;

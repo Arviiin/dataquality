@@ -14,7 +14,7 @@ import java.util.List;
  * 中包含两部分：元数据与返回值，其中，元数据表示操作是否成功与返回值消息等，返回值对应服务端方法所返回的数据。
  */
 public class E3Result implements Serializable{
-
+    private static final long serialVersionUID = 1L;
     // 定义jackson对象
     private static final ObjectMapper MAPPER = new ObjectMapper();
 

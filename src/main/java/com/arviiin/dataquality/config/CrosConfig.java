@@ -1,4 +1,4 @@
-package com.arviiin.dataquality.util;
+package com.arviiin.dataquality.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

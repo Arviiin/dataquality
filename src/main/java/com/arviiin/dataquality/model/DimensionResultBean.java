@@ -1,8 +1,11 @@
 package com.arviiin.dataquality.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class DimensionResultBean {
+public class DimensionResultBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Integer id;
 
