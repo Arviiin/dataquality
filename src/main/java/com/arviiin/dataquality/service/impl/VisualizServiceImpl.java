@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionResultMapper;
+import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.VisualizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class VisualizServiceImpl implements VisualizService {
 
     @Autowired
     private DimensionResultMapper dimensionResultMapper;
+
+    @Autowired
+    private RedisMapper redisMapper;
     /**
      * 获取最近七天的日期
      * @return
@@ -81,6 +85,12 @@ public class VisualizServiceImpl implements VisualizService {
         float dataNonVulnerabilityResult = (float)dimensionResultData.getDataNonVulnerability()/100;
         dataStatistics.add(dataNonVulnerabilityResult);
         return dataStatistics;
+    }
+
+    @Override
+    public List<Float> getDataStatisticsFromRedis() {
+
+        return redisMapper.getDataStatisticsFromRedis();
     }
 
 }

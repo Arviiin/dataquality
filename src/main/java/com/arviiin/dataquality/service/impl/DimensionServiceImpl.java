@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionMapper;
+import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.DimensionService;
@@ -17,6 +18,9 @@ public class DimensionServiceImpl implements DimensionService {
     @Autowired
     private DimensionMapper dimensionMapper;
 
+    @Autowired
+    private RedisMapper redisMapper;
+
     @Override
     public Integer getExpectedTotalRecordAmount(DimensionBean dimensionBean) {
         return dimensionMapper.getExpectedTotalRecordAmount(dimensionBean);
@@ -24,6 +28,12 @@ public class DimensionServiceImpl implements DimensionService {
 
     @Override
     public Integer getTotalRecordAmount(DimensionBean dimensionBean) {
+        //这里暂时需要分两种情况，一种是当是引用的时候，这时候"tablename": "roles_user:roles   一种是其他，
+        if (dimensionBean.getTablename().contains(":")){
+            String[] split = dimensionBean.getTablename().split(":");
+            String referenceTable = split[0];//引用表
+            return dimensionMapper.getTotalRecordAmount(referenceTable);
+        }
         return dimensionMapper.getTotalRecordAmount(dimensionBean.getTablename());
     }
 
@@ -114,6 +124,16 @@ public class DimensionServiceImpl implements DimensionService {
         return dimensionMapper.getTimeBasedTimelinessResult(dimensionBean, beginTime, endTime);
     }
 
+    /**
+     * 注册时候
+     * user.setSalt(UUID.randomUUID().toString().substring(0,5));
+     * user.setPassword(WendaUtil.MD5(password+user.getSalt()));
+     *
+     * 登录时候
+     * if(!WendaUtil.MD5(password+user.getSalt()).equals(user.getPassword())){
+     * @param dimensionBean
+     * @return
+     */
     @Override
     public Integer getDataNonVulnerabilityResult(DimensionBean dimensionBean) {
         String type = dimensionBean.getRule();
@@ -136,5 +156,13 @@ public class DimensionServiceImpl implements DimensionService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         dimensionResultBean.setCreatetime(timestamp);
         dimensionMapper.saveDimensionResultData(dimensionResultBean);
+    }
+
+    @Override
+    public void saveDimensionResultDataToRedis(DimensionResultBean dimensionResultBean) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dimensionResultBean.setCreatetime(timestamp);
+        redisMapper.saveDimensionResultDataToRedis(dimensionResultBean);
+
     }
 }

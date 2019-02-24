@@ -6,7 +6,7 @@ import java.util.List;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long id;
+    private Integer id;
     private String username;
     private String password;
     private String company;
@@ -17,11 +17,11 @@ public class User implements Serializable {
     private Timestamp createtime;
     private Timestamp updatetime;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

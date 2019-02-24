@@ -3,6 +3,7 @@ package com.arviiin.dataquality.service;
 import com.arviiin.dataquality.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -18,7 +19,10 @@ public interface UserService {
 
     public int reg(User user);
 
+    public Map<String, String>  register(User user);
 
-    public int login(String username, String password);
+    //public int login(String username, String password);
+    public Map<String, String> login(String username, String password);
+
 
 }

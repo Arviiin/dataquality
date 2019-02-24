@@ -1,8 +1,11 @@
 package com.arviiin.dataquality.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+@Data
 public class DimensionResultBean implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -15,4 +15,6 @@ public interface VisualizService {
      * @return
      */
     List<Float> getDataStatistics();
+
+    List<Float> getDataStatisticsFromRedis();
 }

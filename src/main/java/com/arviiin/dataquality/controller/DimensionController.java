@@ -4,6 +4,7 @@ import com.arviiin.dataquality.model.DimensionBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.service.DimensionService;
+import com.arviiin.dataquality.util.DimensionMultiThreadRunnableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
 public class DimensionController {
@@ -30,98 +34,47 @@ public class DimensionController {
     public ResponseEntity<JsonResult> getDimensionIndexResult (@RequestBody List<DimensionBean> dimensionBeanList){
         JsonResult r = new JsonResult();
         DimensionResultBean dimensionResultBean = new DimensionResultBean();
+        int totalRecordAmount = -1;
         try {
-                int totalRecordAmount = -1;
-                for (DimensionBean dimensionBean : dimensionBeanList) {
-                    switch (dimensionBean.getDimensionname()){
-                        case "数据文件完备性":
-                            int expectedTotalRecordAmount = dimensionService.getExpectedTotalRecordAmount(dimensionBean);
-                            dimensionResultBean.setExpectedTotalRecordAmount(expectedTotalRecordAmount);
-                            int dataFileCompletenessResult = dimensionService.getDataFileCompletenessResult(dimensionBean);
-                            dimensionResultBean.setDataFileCompleteness(dataFileCompletenessResult);
-//                        logger.info(expectedTotalRecordAmount+"");
-//                        logger.info(dataFileCompletenessResult+"");
-                            logger.info( "数据文件完备性"+(float)dataFileCompletenessResult/expectedTotalRecordAmount+"");
-                            break;
-                        case "数据值完备性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int dataValueCompletenessResult = dimensionService.getDataValueCompletenessResult(dimensionBean);
-                            dimensionResultBean.setDataValueCompleteness(dataValueCompletenessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(dataValueCompletenessResult+"");
-                            logger.info("数据值完备性"+ (float)dataValueCompletenessResult/totalRecordAmount+"");
-                            break;
-                        case "数据引用一致性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int referentialConsistencyResult = dimensionService.getReferentialConsistencyResult(dimensionBean);
-                            dimensionResultBean.setReferentialConsistency(referentialConsistencyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(referentialConsistencyResult+"");
-                            logger.info("数据引用一致性"+ (1 - (float)referentialConsistencyResult/totalRecordAmount)+"");
-                            break;
+            //创建按需增加的线程池
+            ExecutorService exec = Executors.newFixedThreadPool(9);
+            //存放创建的线程  多个不想一个一个提交，可以采用 invokeAll一并提交，但是会同步等待这些任务 会阻塞等待futureResult获取到所有异步执行的结果才会执行
+            //List<Callable<String>> tasks = new ArrayList<>();
+            //存放线程运行的结果
+            //ArrayList<Future<String>> results = new ArrayList<Future<String>>();
+            //创建主线程等待子线程的数目
+            CountDownLatch endSigle = new CountDownLatch(9);
+            for (int i = 0; i < dimensionBeanList.size(); i++) {
+                exec.submit(new DimensionMultiThreadRunnableImpl(totalRecordAmount, endSigle,dimensionBeanList.get(i),dimensionResultBean));
 
-                        case "数据格式一致性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int formatConsistencyResult = dimensionService.getFormatConsistencyResult(dimensionBean);
-                            dimensionResultBean.setFormatConsistency(formatConsistencyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(formatConsistencyResult+"");
-                            logger.info( "数据格式一致性"+(float)formatConsistencyResult/totalRecordAmount+"");
-                            break;
-                        case "数据记录依从性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int dataRecordComplianceResult = dimensionService.getDataRecordComplianceResult(dimensionBean);
-                            dimensionResultBean.setDataRecordCompliance(dataRecordComplianceResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(dataRecordComplianceResult+"");
-                            logger.info( "数据记录依从性"+(float)dataRecordComplianceResult/totalRecordAmount+"");
-                            break;
-                        case "数据范围准确性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int rangeAccuracyResult = dimensionService.getRangeAccuracyResult(dimensionBean);
-                            dimensionResultBean.setRangeAccuracy(rangeAccuracyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(rangeAccuracyResult+"");
-                            logger.info("数据范围准确性"+ (float)rangeAccuracyResult/totalRecordAmount+"");
-                            break;
-                        case "数据记录唯一性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int recordUniquenessResult = dimensionService.getRecordUniquenessResult(dimensionBean);
-                            dimensionResultBean.setRecordUniqueness(recordUniquenessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(recordUniquenessResult+"");
-                            logger.info( "数据记录唯一性"+(float)recordUniquenessResult/totalRecordAmount+"");
-                            break;
-                        case "基于时间段的时效性":
-                            if (totalRecordAmount == -1)
-                                totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
-                            int timeBasedTimelinessResult = dimensionService.getTimeBasedTimelinessResult(dimensionBean);
-                            dimensionResultBean.setTimeBasedTimeliness(timeBasedTimelinessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(timeBasedTimelinessResult+"");
-                            logger.info("基于时间段的时效性"+ (float)timeBasedTimelinessResult/totalRecordAmount+"");
-                            break;
-                        case "数据非脆弱性":
-                            int dataNonVulnerabilityResult  = dimensionService.getDataNonVulnerabilityResult(dimensionBean);
-                            dimensionResultBean.setDataNonVulnerability(dataNonVulnerabilityResult);
-                            logger.info("数据非脆弱性"+dataNonVulnerabilityResult+"");
-                            break;
-                        default:
-                            logger.error("数据错误，未找到指标名为:"+dimensionBean.getDimensionname()+"的指标");
-                            break;
-                    }
+                //Callable<String> dimensionMultiThread = new DimensionMultiThread(totalRecordAmount, endSigle,dimensionBeanList.get(i),dimensionResultBean);
+                //tasks.add(dimensionMultiThread);
 
+                //Callable<String> newMultiThread = new NewMultiThread(i, endSigle);
+                //tasks.add(newMultiThread);
+
+                //Future<String> futureResult =  exec.submit(new DimensionMultiThread(i,endSigle,dimensionBeanList.get(i)));
+                //results.add(futureResult);
+            }
+            //List<Future<String>> futureResult = exec.invokeAll(tasks);//有返回值的多线程
+
+            //wait until all sub-thread are finished
+            endSigle.await();
+            //we want to check whether main thread is waiting for sub-thread
+            System.out.println("this is main threads");
+
+            /*if(futureResult!=null&&futureResult.size()>0){
+                for (Future<String> future : futureResult){
+                    System.out.println(future.get());
+                    results.add(future);
                 }
-                dimensionResultBean.setTotalRecordAmount(totalRecordAmount);
+            }*/
 
-                dimensionService.saveDimensionResultData(dimensionResultBean);
-                r.setStatus("ok");
+            //存入mysql数据库
+            dimensionService.saveDimensionResultData(dimensionResultBean);
+            //存入redis
+            dimensionService.saveDimensionResultDataToRedis(dimensionResultBean);
+            r.setStatus("ok");
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
             r.setStatus("error");

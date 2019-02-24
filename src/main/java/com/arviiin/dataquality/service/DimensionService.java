@@ -33,4 +33,6 @@ public interface DimensionService {
     Integer getDataNonVulnerabilityResult(DimensionBean dimensionBean);
 
     void saveDimensionResultData(DimensionResultBean dimensionResultBean);
+
+    void saveDimensionResultDataToRedis(DimensionResultBean dimensionResultBean);
 }

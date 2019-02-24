@@ -49,12 +49,11 @@ public class DimensionBean implements Serializable {
     @Override
     public String toString() {
         return "DimensionBean{" +
-                "target='" + dimensionname + '\'' +
+                "dimensionname='" + dimensionname + '\'' +
                 ", tablename='" + tablename + '\'' +
                 ", columnname='" + columnname + '\'' +
                 ", rule='" + rule + '\'' +
                 '}';
     }
-
 
 }
