@@ -32,7 +32,7 @@ public class LogAspect {
 	  5、第5个* 方法名，com.*.*.controller包下所有类所有方法
 	  6、(..) 表示方法参数，..表示任何参数
 	  */
-    @Pointcut("execution(* com.arviiin.dataquality.controller.*Controller.*(..))")
+    @Pointcut("execution(* com.arviiin.dataquality.controller.DimensionController.*(..))")
     public void webLog() {
     }
 

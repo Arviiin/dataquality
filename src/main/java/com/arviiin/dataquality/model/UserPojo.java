@@ -2,10 +2,16 @@ package com.arviiin.dataquality.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
-public class User implements Serializable {
+/**
+ * Created with IDEA
+ *
+ * @Author: jlzhuang
+ * @Date: 2019/2/25
+ * @Version 1.0.0
+ */
 
+public class UserPojo implements Serializable {
     private Integer id;
     private String username;
     private String password;
@@ -13,9 +19,10 @@ public class User implements Serializable {
     private String email;
     private String telephone;
     private boolean enabled;
-    private List<Role> roles;
     private Timestamp createtime;
     private Timestamp updatetime;
+    private String testaddr;
+    private String testrange;
 
     public Integer getId() {
         return id;
@@ -73,14 +80,6 @@ public class User implements Serializable {
         this.enabled = enabled;
     }
 
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
     public Timestamp getCreatetime() {
         return createtime;
     }
@@ -97,20 +96,19 @@ public class User implements Serializable {
         this.updatetime = updatetime;
     }
 
+    public String getTestaddr() {
+        return testaddr;
+    }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", company='" + company + '\'' +
-                ", email='" + email + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", enabled=" + enabled +
-                ", roles=" + roles +
-                ", createtime=" + createtime +
-                ", updatetime=" + updatetime +
-                '}';
+    public void setTestaddr(String testaddr) {
+        this.testaddr = testaddr;
+    }
+
+    public String getTestrange() {
+        return testrange;
+    }
+
+    public void setTestrange(String testrange) {
+        this.testrange = testrange;
     }
 }
