@@ -18,7 +18,7 @@ public class UserPojo implements Serializable {
     private String company;
     private String email;
     private String telephone;
-    private boolean enabled;
+    private Integer enabled;
     private Timestamp createtime;
     private Timestamp updatetime;
     private String testaddr;
@@ -72,11 +72,11 @@ public class UserPojo implements Serializable {
         this.telephone = telephone;
     }
 
-    public boolean isEnabled() {
+    public Integer getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Integer enabled) {
         this.enabled = enabled;
     }
 
