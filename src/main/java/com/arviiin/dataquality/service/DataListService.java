@@ -1,8 +1,7 @@
 package com.arviiin.dataquality.service;
 
-import com.arviiin.dataquality.model.UserPojo;
-
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IDEA
@@ -13,5 +12,8 @@ import java.util.List;
  */
 
 public interface DataListService {
-    List<UserPojo> getDataListByTableName(String tablename);
+
+    List<Map<String,Object>> getDataListByTableNameWithMap(String tablename);
+
+    List<String> getAllTableNameByDbName(String dbname);
 }

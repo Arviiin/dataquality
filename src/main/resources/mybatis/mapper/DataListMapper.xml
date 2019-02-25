@@ -4,8 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.arviiin.dataquality.mapper.DataListMapper">
 
-    <select id="getDataListByTableName" resultType="com.arviiin.dataquality.model.UserPojo">
-        SELECT * FROM ${tablename}
+    <!--把resultType从无序的Map改成有序的LinkedHashMap，可以直观感受到向上转型的好处，前面由于是用Map接收结果的，代码不用改
+    发现一个很搞笑的东西，把resultType改成resultMap会报找不到LinkedHashMap
+    IncompleteElementException: Could not find result map java.util.LinkedHashMap
+    即便是resultType，返回只写LinkedHashMap也会报错，真坑！！！-->
+    <select id="getDataListByTableNameWithMap" resultType="java.util.LinkedHashMap" >
+    <![CDATA[
+	    select * from ${tablename}
+	]]>
+    </select>
+
+    <select id="getAllTableNameByDbName" resultType="java.lang.String" >
+    <![CDATA[
+        select table_name from information_schema.tables where table_schema=#{dbname} and table_type='base table';
+        ]]>
     </select>
 
 </mapper>

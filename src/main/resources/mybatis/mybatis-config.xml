@@ -2,6 +2,7 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
+        <!--用map接收时，即便value为空也保留key-->
         <setting name="callSettersOnNulls" value="true"/>
 
         <setting name="cacheEnabled" value="true"/>

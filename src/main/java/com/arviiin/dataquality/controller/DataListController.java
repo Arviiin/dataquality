@@ -2,7 +2,6 @@ package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.model.ColBean;
 import com.arviiin.dataquality.model.JsonResult;
-import com.arviiin.dataquality.model.UserPojo;
 import com.arviiin.dataquality.service.DataListService;
 import com.arviiin.dataquality.util.JsonUtils;
 import org.slf4j.Logger;
@@ -13,11 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IDEA
@@ -28,37 +23,54 @@ import java.util.Map;
  */
 @RestController
 public class DataListController {
-
     private static Logger logger = LoggerFactory.getLogger(DataListController.class);
 
     @Autowired
     private DataListService dataListService;
 
     @PostMapping("/data/list")
-    public ResponseEntity<JsonResult> getDataListByTableName (@RequestParam(value = "tablename") String tablename){
+    public ResponseEntity<JsonResult> getDataListByTableNameWithMap (@RequestParam(value = "tablename") String tablename){
         JsonResult r = new JsonResult();
         try {
-            List<UserPojo> dataList = dataListService.getDataListByTableName(tablename);
-
-            Map<Object, Object> dataMap = new HashMap<>();
+            //创建map用于装备col和tableData
+            Map<String, Object> dataMap = new HashMap<>();
+            //获取数据库表中数据
+            List<Map<String, Object>> dataMapList = dataListService.getDataListByTableNameWithMap(tablename);
+            /* **************开始组装col*****************/
             List<Object> col = new ArrayList<>();
-
-            Field[] declaredFields = UserPojo.class.getDeclaredFields();
-            for (Field declaredField : declaredFields) {
+            //拿到第一行数据，数据库字段名与相应数值
+            Map<String, Object> fieldObjectMap = dataMapList.get(0);
+            //拿到第一行数据库字段名
+            Set<String> filedSet = fieldObjectMap.keySet();
+            for (String field : filedSet) {
                 ColBean colBean = new ColBean();
-                colBean.setProp(declaredField.getName());
-                colBean.setLable(declaredField.getName());
+                colBean.setProp(field);
+                colBean.setLable(field);
                 col.add(colBean);
             }
             dataMap.put("clo",col);
-
-            String tableData = JsonUtils.objectToJson(dataList);
+            /* **************开始组装tableData*****************/
+            String tableData = JsonUtils.objectToJson(dataMapList);//不转成json，直接把dataMapList传到前台，别的没问题，就是时间乱码，因而还是建议转一下，变成13位的时间戳，交给前台处理
             dataMap.put("tableData",tableData);
 
-            System.out.println(dataMap);
-
-
             r.setResult(dataMap);
+            r.setStatus("ok");
+        } catch (Exception e) {
+            r.setResult(e.getClass().getName() + ":" + e.getMessage());
+            r.setStatus("error");
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(r);
+    }
+
+    @PostMapping("/data/listTable")
+    public ResponseEntity<JsonResult> getAllTableNameByDbName (@RequestParam(value = "dbname") String dbname){
+        JsonResult r = new JsonResult();
+        try {
+            //获取数据库表中数据
+            List<String> allTableNameList = dataListService.getAllTableNameByDbName(dbname);
+
+            r.setResult(allTableNameList);
             r.setStatus("ok");
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
