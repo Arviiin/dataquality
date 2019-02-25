@@ -1,5 +1,7 @@
 package com.arviiin.dataquality.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -19,7 +21,9 @@ public class UserPojo implements Serializable {
     private String email;
     private String telephone;
     private Integer enabled;
+    @JsonFormat(pattern = "yyyy-MM-dd HH-mm-ss", timezone = "GMT+8")
     private Timestamp createtime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH-mm-ss", timezone = "GMT+8")
     private Timestamp updatetime;
     private String testaddr;
     private String testrange;
