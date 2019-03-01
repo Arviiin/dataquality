@@ -31,6 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByName(String username) {
+        return userMapper.getUserByName(username);
+    }
+
+    @Override
     public List<User> getUserList() {
         return userMapper.getUserList();
     }
@@ -129,7 +134,6 @@ public class UserServiceImpl implements UserService {
         //判断用户名是否存在
         User user = userMapper.loadUserByUsername(username);
         if(user == null){
-//            respBean.setMsg("msg", "用户名不存在");
             map.put("msg", "用户名不存在");
             map.put("code", "1");
             //return 1;
@@ -159,5 +163,52 @@ public class UserServiceImpl implements UserService {
         loginTicket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
         loginTicketMapper.addTicket(loginTicket);
         return loginTicket.getTicket();
+    }
+
+    /**
+     *
+     * @param username
+     * @param password
+     * @param newPassword
+     * @return
+     ** 0表示成功
+     *  1表示原密码不正确
+     *  2 失败
+     */
+    @Override
+    public int updatePassword(String username, String password, String newPassword) {
+        User user = userMapper.loadUserByUsername(username);
+        //修改密码,修改之前先对密码进行验证
+        if(!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())){
+            return 1;
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex(newPassword.getBytes()));
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setUpdatetime(timestamp);
+        int res = userMapper.updatePassword(user);
+        return res>0 ? 0 : 2;
+    }
+
+    /**
+     *
+     * @param username
+     * @param company
+     * @param email
+     * @param telephone
+     * @return
+     * 0表示成功
+     * 1失败
+     */
+    @Override
+    public int updateProfile(String username, String company, String email, String telephone) {
+        User user = userMapper.loadUserByUsername(username);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        user.setUpdatetime(timestamp);
+        user.setCompany(company);
+        user.setTelephone(telephone);
+        user.setEmail(email);
+        user.setEnabled(true);
+        int res = userMapper.updateProfile(user);
+        return res>0 ? 0 : 1;
     }
 }

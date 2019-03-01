@@ -1,32 +1,21 @@
 package com.arviiin.dataquality.controller;
 
-import com.arviiin.dataquality.config.StateParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
 
-import java.util.UUID;
-
 public abstract class BaseController{
-
-	protected final String success = StateParameter.SUCCESS;
-	protected final String  fail = StateParameter.FAULT;
+	public final static String SUCCESS="1";
+	public final  static String  FAIL="0";
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public ModelMap getModelMap(String status,Object data,String msg){
+	public ModelMap ModelMapResponse(String status,Object data,String msg){
 		ModelMap modelMap=new ModelMap();
-		modelMap.put("status", status);
+		modelMap.put("status", status);//private HttpStatus status;
 		modelMap.put("data", data);
 		modelMap.put("msg", msg);
 		return modelMap;
-		
-	}
-
-	public String getUuid(){
-		String uuid = UUID.randomUUID().toString(); //获取UUID并转化为String对象
-		uuid = uuid.replace("-", "");
-		return uuid;
 	}
 
 }

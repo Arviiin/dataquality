@@ -3,17 +3,24 @@ package com.arviiin.dataquality.service.impl;
 import com.arviiin.dataquality.mapper.DimensionMapper;
 import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.DimensionService;
 import com.arviiin.dataquality.util.CommonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class DimensionServiceImpl implements DimensionService {
+
+    private static Logger logger = LoggerFactory.getLogger(DimensionServiceImpl.class);
 
     @Autowired
     private DimensionMapper dimensionMapper;
@@ -52,23 +59,43 @@ public class DimensionServiceImpl implements DimensionService {
      *     "dimensionname": "引用一致性",
      *     "rule": "string",
      *     "tablename": "roles_user:roles"
+     *
+     *     若不是引用表中数据，而是自己定义的，
+     * 		如，一表字段只允许填铂金会员，黄金会员，
+     * 		白银会员。此时规则里要填上相应引用字段以、分割
      * @param dimensionBean
      * @return
      */
     @Override
     public Integer getReferentialConsistencyResult(DimensionBean dimensionBean) {
-        String[] split = dimensionBean.getTablename().split(":");
-        String referenceTable = split[0];//引用表
-        String beReferenceTable = split[1];//被引用表
+        if (dimensionBean.getTablename().contains(":") && dimensionBean.getColumnname().contains(":")){
+            /*
+                SELECT count(*)  FROM roles_user
+                WHERE rid not in (SELECT id FROM roles)
+            */
+            String[] split = dimensionBean.getTablename().split(":");
+            String referenceTable = split[0];//引用表
+            String beReferenceTable = split[1];//被引用表
 
-        String[] split1 = dimensionBean.getColumnname().split(":");
-        String referenceFiled = split1[0];//引用字段
-        String beReferenceFiled = split1[1];//被引用字段
-        /*
-        SELECT count(*)  FROM roles_user
-        WHERE rid not in (SELECT id FROM roles)
-        */
-        return dimensionMapper.getReferentialConsistencyResult(referenceTable, referenceFiled,beReferenceFiled,beReferenceTable);
+            String[] split1 = dimensionBean.getColumnname().split(":");
+            String referenceFiled = split1[0];//引用字段
+            String beReferenceFiled = split1[1];//被引用字段
+            return dimensionMapper.getReferentialConsistencyResult(referenceTable, referenceFiled,beReferenceFiled,beReferenceTable);
+        }else {
+            String rule = dimensionBean.getRule();
+            String[] split = rule.split("、");
+            HashSet<String> strings = new HashSet<>();
+            for (String s : split) {
+                strings.add(s);
+            }
+            List<String> referentialConsistencyResultWithInput = dimensionMapper.getReferentialConsistencyResultWithInput(dimensionBean);
+            int cnt = 0;
+            for (String s : referentialConsistencyResultWithInput) {
+                if (strings.contains(s))
+                    cnt++;
+            }
+            return cnt;
+        }
     }
 
     @Override
@@ -83,6 +110,18 @@ public class DimensionServiceImpl implements DimensionService {
                         cnt++;
                 }
                 break;
+            case "邮编规则":
+                for (String s : formatConsistencyResult) {
+                    if (CommonUtils.isPostCode(s))
+                        cnt++;
+                }
+                break;
+            case "电话规则":
+                for (String s : formatConsistencyResult) {
+                    if (CommonUtils.isMobile(s))
+                        cnt++;
+                }
+                break;
             default:
                 break;
         }
@@ -93,9 +132,12 @@ public class DimensionServiceImpl implements DimensionService {
     public Integer getDataRecordComplianceResult(DimensionBean dimensionBean) {
         List<String> dataRecordComplianceResult = dimensionMapper.getDataRecordComplianceResult(dimensionBean);
         //家庭住址
+        String regex = ".*(省|自治区|上海|北京|天津|重庆).*(市|自治州).*(区|县|市|旗)(.*(镇|乡|街道))?";
+        Pattern p = Pattern.compile(regex);//如果放在方法里，频繁的new对象很可怕！占用太多资源，甚至OOM
         int cnt = 0;
         for (String s : dataRecordComplianceResult) {
-            if (CommonUtils.isAddress(s))
+            //if (CommonUtils.isAddress(s))
+            if (CommonUtils.isAddress(s,p))
                 cnt++;
         }
         return cnt;
@@ -105,8 +147,8 @@ public class DimensionServiceImpl implements DimensionService {
     public Integer getRangeAccuracyResult(DimensionBean dimensionBean) {
         String rule = dimensionBean.getRule();
         String[] split = rule.split(":");
-        String begin = split[0];
-        String end = split[1];
+        String begin = split[0];//开始范围
+        String end = split[1];//结束范围
         return dimensionMapper.getRangeAccuracyResult(dimensionBean, begin, end);
     }
 
@@ -164,5 +206,24 @@ public class DimensionServiceImpl implements DimensionService {
         dimensionResultBean.setCreatetime(timestamp);
         redisMapper.saveDimensionResultDataToRedis(dimensionResultBean);
 
+    }
+
+    @Override
+    public void saveDimensionDetailResultData(DimensionDetailResultBean dimensionDetailResultBean) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dimensionDetailResultBean.setCreatetime(timestamp);
+        dimensionDetailResultBean.setUpdatetime(timestamp);
+        Integer integer = dimensionMapper.saveDimensionDetailResultData(dimensionDetailResultBean);
+        if (integer <= 0){
+            logger.error("维度信息未能正确传入mysql");
+        }
+    }
+
+    @Override
+    public void saveDimensionDetailResultDataToRedis(DimensionDetailResultBean dimensionDetailResultBean) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        dimensionDetailResultBean.setCreatetime(timestamp);
+        dimensionDetailResultBean.setUpdatetime(timestamp);
+        redisMapper.saveDimensionDetailResultDataToRedis(dimensionDetailResultBean);
     }
 }

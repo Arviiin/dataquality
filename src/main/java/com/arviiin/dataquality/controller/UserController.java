@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
-public class UserController {
+public class UserController extends BaseController{
     @Autowired
     private UserService userService;
 
@@ -126,6 +126,74 @@ public class UserController {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
             r.setStatus("error");
 
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(r);
+    }
+
+
+    /**
+     * 根据用户名修改用户密码
+     * @param
+     * @return
+     * 0表示成功
+     * 1表示原密码不正确
+     * 2 失败
+     */
+    @RequestMapping(value = "user/update_password", method = RequestMethod.PUT)
+    public ResponseEntity<JsonResult> updatePassword (@RequestParam("username") String username,
+                                                      @RequestParam("password") String password,
+                                                      @RequestParam(value = "new_password" ,required = true,defaultValue = "NO") String newPassword){
+        JsonResult r = new JsonResult();//不管是地址栏里的参数，还是表单里面的参数都可以用@RequestParam取得
+        /*if(new_password!=null && !"NO".equals(new_password)){//太诡异了，required = false居然不行
+        }*/
+        try {
+            int ret = userService.updatePassword(username,password,newPassword);
+            if (ret == 2) {
+                r.setResult(ret);
+                r.setStatus("fail");
+            } else if (ret == 0){
+                r.setResult(ret);
+                r.setStatus("ok");
+            } else {
+                r.setResult(ret);
+                r.setStatus("password error");
+            }
+        } catch (Exception e) {
+            r.setResult(e.getClass().getName() + ":" + e.getMessage());
+            r.setStatus("error");
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(r);
+    }
+
+
+    /**
+     * 根据用户名修改用户信息
+     * @param
+     * @return
+     *   * 0表示成功
+     *      * 1失败
+     */
+    @RequestMapping(value = "user/update_profile", method = RequestMethod.PUT)
+    public ResponseEntity<JsonResult> updateProfile (@RequestParam("username") String username,
+                                                     @RequestParam("company") String company,
+                                                     @RequestParam("email") String email,
+                                                     @RequestParam("telephone") String telephone){
+        JsonResult r = new JsonResult();//不管是地址栏里的参数，还是表单里面的参数都可以用@RequestParam取得
+
+        try {
+            int ret = userService.updateProfile(username,company,email,telephone);
+            if (ret == 1) {
+                r.setResult(ret);
+                r.setStatus("fail");
+            } else if (ret == 0){
+                r.setResult(ret);
+                r.setStatus("ok");
+            }
+        } catch (Exception e) {
+            r.setResult(e.getClass().getName() + ":" + e.getMessage());
+            r.setStatus("error");
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);

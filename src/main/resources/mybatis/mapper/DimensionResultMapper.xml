@@ -9,5 +9,8 @@
         SELECT * FROM dimension WHERE id = (SELECT max(id) FROM dimension)
     </select>
 
+    <select id="getDimensionDetailResultData" resultType="com.arviiin.dataquality.model.DimensionDetailResultBean">
+        SELECT * FROM dimension_result WHERE id = (SELECT max(id) FROM dimension_result)
+    </select>
 
 </mapper>

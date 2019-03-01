@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.service;
 
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 
 public interface DimensionService {
@@ -35,4 +36,8 @@ public interface DimensionService {
     void saveDimensionResultData(DimensionResultBean dimensionResultBean);
 
     void saveDimensionResultDataToRedis(DimensionResultBean dimensionResultBean);
+
+    void saveDimensionDetailResultData(DimensionDetailResultBean dimensionDetailResultBean);
+
+    void saveDimensionDetailResultDataToRedis(DimensionDetailResultBean dimensionDetailResultBean);
 }

@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.mapper;
 
 import com.arviiin.dataquality.config.RedisConstants;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.util.JsonUtils;
 import com.arviiin.dataquality.util.RedisUtil;
@@ -56,5 +57,14 @@ public class RedisMapper {
         float dataNonVulnerabilityResult = (float)dimensionResultBean.getDataNonVulnerability()/100;
         dataStatistics.add(dataNonVulnerabilityResult);
         return dataStatistics;
+    }
+
+    public void saveDimensionDetailResultDataToRedis(DimensionDetailResultBean dimensionDetailResultBean) {
+        redisUtil.set("dimensionDetailResult",JsonUtils.objectToJson(dimensionDetailResultBean), RedisConstants.datebase1);
+    }
+
+    public DimensionDetailResultBean getDimensionDetailResultDataFromRedis() {
+        String dimensionDetailResult = redisUtil.get("dimensionDetailResult", RedisConstants.datebase1);
+        return  JsonUtils.jsonToPojo(dimensionDetailResult, DimensionDetailResultBean.class);
     }
 }

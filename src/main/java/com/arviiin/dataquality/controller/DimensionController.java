@@ -1,26 +1,26 @@
 package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.service.DimensionService;
-import com.arviiin.dataquality.util.DimensionMultiThreadRunnableImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.arviiin.dataquality.util.BeanUtils;
+import com.arviiin.dataquality.util.DimensionMultiThreadCallableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
+import java.util.concurrent.*;
 
 @RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
-public class DimensionController {
-    private static Logger logger = LoggerFactory.getLogger(DimensionController.class);
+public class DimensionController extends BaseController{
 
     @Autowired
     private DimensionService dimensionService;
@@ -34,46 +34,44 @@ public class DimensionController {
     public ResponseEntity<JsonResult> getDimensionIndexResult (@RequestBody List<DimensionBean> dimensionBeanList){
         JsonResult r = new JsonResult();
         DimensionResultBean dimensionResultBean = new DimensionResultBean();
-        int totalRecordAmount = -1;
         try {
-            //创建按需增加的线程池
+            //创建数目固定的线程池
             ExecutorService exec = Executors.newFixedThreadPool(9);
             //存放创建的线程  多个不想一个一个提交，可以采用 invokeAll一并提交，但是会同步等待这些任务 会阻塞等待futureResult获取到所有异步执行的结果才会执行
-            //List<Callable<String>> tasks = new ArrayList<>();
+            List<Callable<Map<String,Object>>> tasks = new ArrayList<>();
             //存放线程运行的结果
-            //ArrayList<Future<String>> results = new ArrayList<Future<String>>();
+            //List<Future<Map<String,Integer>>> futureResults = new ArrayList<Future<Map<String,Integer>>>();//若是一个一个的提交则需要这个
             //创建主线程等待子线程的数目
             CountDownLatch endSigle = new CountDownLatch(9);
             for (int i = 0; i < dimensionBeanList.size(); i++) {
-                exec.submit(new DimensionMultiThreadRunnableImpl(totalRecordAmount, endSigle,dimensionBeanList.get(i),dimensionResultBean));
+                //无返回值的情况
+                //exec.submit(new DimensionMultiThreadRunnableImpl(totalRecordAmount, endSigle,dimensionBeanList.get(i),dimensionResultBean));
 
-                //Callable<String> dimensionMultiThread = new DimensionMultiThread(totalRecordAmount, endSigle,dimensionBeanList.get(i),dimensionResultBean);
-                //tasks.add(dimensionMultiThread);
+                Callable<Map<String,Object>> dimensionMultiThread = new DimensionMultiThreadCallableImpl(endSigle,dimensionBeanList.get(i));
+                tasks.add(dimensionMultiThread);
 
-                //Callable<String> newMultiThread = new NewMultiThread(i, endSigle);
-                //tasks.add(newMultiThread);
-
-                //Future<String> futureResult =  exec.submit(new DimensionMultiThread(i,endSigle,dimensionBeanList.get(i)));
-                //results.add(futureResult);
+//                Future<Map<String,Integer>> futureResult =  exec.submit(new DimensionMultiThreadCallableImpl(endSigle,dimensionBeanList.get(i)));//创建的同时提交线程
+//                futureResults.add(futureResult);
             }
-            //List<Future<String>> futureResult = exec.invokeAll(tasks);//有返回值的多线程
-
+            List<Future<Map<String,Object>>> futureResults = exec.invokeAll(tasks);//有返回值的多线程，且同时提交多个线程
             //wait until all sub-thread are finished
             endSigle.await();
             //we want to check whether main thread is waiting for sub-thread
             System.out.println("this is main threads");
 
-            /*if(futureResult!=null&&futureResult.size()>0){
-                for (Future<String> future : futureResult){
-                    System.out.println(future.get());
-                    results.add(future);
+            Map<String, Object> resultMap = new HashMap<>();
+            if(futureResults!=null&&futureResults.size()>0){
+                for (Future<Map<String,Object>> future : futureResults){
+                    Map<String, Object> futureMap = future.get();
+                    resultMap.putAll(futureMap);
                 }
-            }*/
+            }
+            DimensionDetailResultBean dimensionDetailResultBean = BeanUtils.mapToBean(resultMap, DimensionDetailResultBean.class);
 
             //存入mysql数据库
-            dimensionService.saveDimensionResultData(dimensionResultBean);
+            dimensionService.saveDimensionDetailResultData(dimensionDetailResultBean);
             //存入redis
-            dimensionService.saveDimensionResultDataToRedis(dimensionResultBean);
+            dimensionService.saveDimensionDetailResultDataToRedis(dimensionDetailResultBean);
             r.setStatus("ok");
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());

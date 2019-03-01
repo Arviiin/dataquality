@@ -25,6 +25,14 @@
         WHERE ${referenceFiled} not in (SELECT ${beReferenceFiled} FROM ${beReferenceTable})
     </select>
 
+
+
+    <select id="getReferentialConsistencyResultWithInput" resultType="java.lang.String">
+        SELECT ${dimensionBean.columnname} FROM ${dimensionBean.tablename}
+    </select>
+
+
+
     <select id="getFormatConsistencyResult" resultType="java.lang.String">
         SELECT ${dimensionBean.columnname} FROM ${dimensionBean.tablename}
     </select>
@@ -61,5 +69,27 @@
                                    createtime=#{dimensionResultBean.createtime}
     </insert>
 
+    <insert id="saveDimensionDetailResultData" useGeneratedKeys="true" keyProperty="dimensionDetailResultBean.id" keyColumn="id">
+        INSERT INTO dimension_result set
+            expected_total_record_amount=#{dimensionDetailResultBean.expectedTotalRecordAmount},
+            data_file_completeness_result=#{dimensionDetailResultBean.dataFileCompletenessResult},
+            total_record_amount_of_data_value_completeness=#{dimensionDetailResultBean.totalRecordAmountOfDataValueCompleteness},
+            data_value_completeness_result=#{dimensionDetailResultBean.dataValueCompletenessResult},
+            total_record_amount_of_referential_consistency=#{dimensionDetailResultBean.totalRecordAmountOfReferentialConsistency},
+            referential_consistency_result=#{dimensionDetailResultBean.referentialConsistencyResult},
+            total_record_amount_of_format_consistency=#{dimensionDetailResultBean.totalRecordAmountOfFormatConsistency},
+            format_consistency_result=#{dimensionDetailResultBean.formatConsistencyResult},
+            total_record_amount_of_data_record_compliance=#{dimensionDetailResultBean.totalRecordAmountOfDataRecordCompliance},
+            data_record_compliance_result=#{dimensionDetailResultBean.dataRecordComplianceResult},
+            total_record_amount_of_range_accuracy=#{dimensionDetailResultBean.totalRecordAmountOfRangeAccuracy},
+            range_accuracy_result=#{dimensionDetailResultBean.rangeAccuracyResult},
+            total_record_amount_of_record_uniqueness=#{dimensionDetailResultBean.totalRecordAmountOfRecordUniqueness},
+            record_uniqueness_result=#{dimensionDetailResultBean.recordUniquenessResult},
+            total_record_amount_of_time_based_timeliness=#{dimensionDetailResultBean.totalRecordAmountOfTimeBasedTimeliness},
+            time_based_timeliness_result=#{dimensionDetailResultBean.timeBasedTimelinessResult},
+            data_non_vulnerability_result=#{dimensionDetailResultBean.dataNonVulnerabilityResult},
+            createtime=#{dimensionDetailResultBean.createtime},
+            updatetime=#{dimensionDetailResultBean.updatetime}
+    </insert>
 
 </mapper>

@@ -21,15 +21,10 @@
             <result column="rname" property="name"/>
         </collection>
     </resultMap>
-
-    <!--
-        mybatis默认会把mapper.xml映射为dao的实现
-        -->
-
+    <!--    mybatis默认会把mapper.xml映射为dao的实现     -->
     <select id="getUserList"  resultMap="BaseResultMap"  >
         SELECT * FROM user
     </select>
-
 
     <!--<select id="getAll"  resultMap="BaseResultMap"  >
         SELECT
@@ -69,11 +64,6 @@
        WHERE
        		 id =#{id}
     </delete>-->
-
-
-
-
-
 
     <select id="loadUserByUsername" resultType="com.arviiin.dataquality.model.User">
         SELECT * FROM user WHERE username=#{username}

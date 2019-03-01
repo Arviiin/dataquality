@@ -9,20 +9,25 @@ public interface UserService {
 
     User getUserById(Integer id);
 
-    public List<User> getUserList();
+    User getUserByName(String username);
 
-    public int add(User user);
+    List<User> getUserList();
 
-    public int update(Integer id, User user);
+    int add(User user);
 
-    public int delete(Integer id);
+    int update(Integer id, User user);
 
-    public int reg(User user);
+    int delete(Integer id);
 
-    public Map<String, String>  register(User user);
+    int reg(User user);
+
+    Map<String, String>  register(User user);
 
     //public int login(String username, String password);
-    public Map<String, String> login(String username, String password);
+    Map<String, String> login(String username, String password);
 
 
+    int updatePassword(String username, String password, String newPassword);
+
+    int updateProfile(String username, String company, String email, String telephone);
 }

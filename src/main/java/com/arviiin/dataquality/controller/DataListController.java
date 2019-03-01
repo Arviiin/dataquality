@@ -4,8 +4,6 @@ import com.arviiin.dataquality.model.ColBean;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.service.DataListService;
 import com.arviiin.dataquality.util.JsonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +20,7 @@ import java.util.*;
  * @Version 1.0.0
  */
 @RestController
-public class DataListController {
-    private static Logger logger = LoggerFactory.getLogger(DataListController.class);
+public class DataListController extends BaseController{
 
     @Autowired
     private DataListService dataListService;

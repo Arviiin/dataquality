@@ -2,6 +2,7 @@ package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionResultMapper;
 import com.arviiin.dataquality.mapper.RedisMapper;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.VisualizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class VisualizServiceImpl implements VisualizService {
     @Autowired
     private RedisMapper redisMapper;
     /**
-     * 获取最近七天的日期
+     * 获取表的横坐标
      * @return
      */
     public List<String> getCategories() {
@@ -47,7 +48,7 @@ public class VisualizServiceImpl implements VisualizService {
     }
 
     /**
-     * 获取最近七天的数据
+     * 从Mysql中获取表的纵坐标
      * @return
      */
     public List<Float> getDataStatistics() {
@@ -88,9 +89,87 @@ public class VisualizServiceImpl implements VisualizService {
     }
 
     @Override
-    public List<Float> getDataStatisticsFromRedis() {
+    public List<Float> getDetailDataStatistics() {
+        DimensionDetailResultBean dimensionDetailResultData = dimensionResultMapper.getDimensionDetailResultData();
+        List<Float> dataStatistics = new ArrayList<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
+        dataStatistics.add(dataFileCompletenessResult);
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
+        dataStatistics.add(dataValueCompletenessResult);
 
-        return redisMapper.getDataStatisticsFromRedis();
+        // "数据引用一致性":
+        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        dataStatistics.add(referentialConsistencyResult);
+
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
+        dataStatistics.add(formatConsistencyResult);
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
+        dataStatistics.add(dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
+        dataStatistics.add(rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
+        dataStatistics.add(recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
+        dataStatistics.add(timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
+        dataStatistics.add(dataNonVulnerabilityResult);
+
+        return dataStatistics;
+    }
+
+    @Override
+    public List<Float> getDataStatisticsFromRedis() {
+        DimensionDetailResultBean dimensionDetailResultData = redisMapper.getDimensionDetailResultDataFromRedis();
+        List<Float> dataStatistics = new ArrayList<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
+        dataStatistics.add(dataFileCompletenessResult);
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
+        dataStatistics.add(dataValueCompletenessResult);
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        dataStatistics.add(referentialConsistencyResult);
+
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
+        dataStatistics.add(formatConsistencyResult);
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
+        dataStatistics.add(dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
+        dataStatistics.add(rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
+        dataStatistics.add(recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
+        dataStatistics.add(timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
+        dataStatistics.add(dataNonVulnerabilityResult);
+
+        return dataStatistics;
     }
 
 }

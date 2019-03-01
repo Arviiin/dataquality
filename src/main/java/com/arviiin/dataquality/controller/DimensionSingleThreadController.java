@@ -4,8 +4,6 @@ import com.arviiin.dataquality.model.DimensionBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.service.DimensionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 //@RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
-public class DimensionSingleThreadController {
-    private static Logger logger = LoggerFactory.getLogger(DimensionSingleThreadController.class);
+public class DimensionSingleThreadController extends BaseController{
 
     @Autowired
     private DimensionService dimensionService;

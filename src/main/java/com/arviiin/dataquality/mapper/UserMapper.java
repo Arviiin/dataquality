@@ -12,6 +12,9 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE id = #{id}")
     User getUserById(Integer id);
 
+    @Select("SELECT * FROM user WHERE username = #{username}")
+    User getUserByName(String username);
+
     /*@Select("SELECT * FROM user")
     public List<User> getUserList();*/
 
@@ -29,4 +32,10 @@ public interface UserMapper {
     User loadUserByUsername(@Param("username") String username);
 
     long reg(User user);
+
+    @Update("UPDATE user SET password = #{user.password} ,updatetime = #{user.updatetime} WHERE id = #{user.id}")
+    int updatePassword(@Param("user") User user);//@Param("user")不加会报错
+
+    @Update("UPDATE user SET company = #{user.company} ,email = #{user.email},telephone = #{user.telephone},updatetime = #{user.updatetime},enabled = #{user.enabled} WHERE id = #{user.id}")
+    int updateProfile(@Param("user") User user);
 }

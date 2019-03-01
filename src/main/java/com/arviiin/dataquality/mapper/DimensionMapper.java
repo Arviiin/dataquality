@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.mapper;
 
 import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +27,8 @@ public interface DimensionMapper {
                                             @Param("beReferenceFiled") String beReferenceFiled,
                                             @Param("beReferenceTable") String beReferenceTable);
 
+    List<String> getReferentialConsistencyResultWithInput(@Param("dimensionBean") DimensionBean dimensionBean);
+
     List<String> getFormatConsistencyResult(@Param("dimensionBean") DimensionBean dimensionBean);
 
     List<String> getDataRecordComplianceResult(@Param("dimensionBean") DimensionBean dimensionBean);
@@ -42,4 +45,7 @@ public interface DimensionMapper {
 
 
     void saveDimensionResultData(@Param("dimensionResultBean") DimensionResultBean dimensionResultBean);
+
+
+    Integer saveDimensionDetailResultData(@Param("dimensionDetailResultBean") DimensionDetailResultBean dimensionDetailResultBean);
 }

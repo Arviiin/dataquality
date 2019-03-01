@@ -1,5 +1,6 @@
 package com.arviiin.dataquality.mapper;
 
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,4 +10,5 @@ public interface DimensionResultMapper {
 
     DimensionResultBean getDimensionResultData();
 
+    DimensionDetailResultBean getDimensionDetailResultData();
 }

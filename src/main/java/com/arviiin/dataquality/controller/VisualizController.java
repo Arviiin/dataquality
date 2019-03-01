@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class VisualizController {
+public class VisualizController extends BaseController{
 
     @Autowired
     private VisualizService visualizService;
@@ -28,9 +28,10 @@ public class VisualizController {
         List<Float> dataStatistics = visualizService.getDataStatisticsFromRedis();
         if (dataStatistics == null){
             //请求数据库
-            dataStatistics = visualizService.getDataStatistics();
-            //再把数据存入redis缓存
+            //dataStatistics = visualizService.getDataStatistics();
+            dataStatistics = visualizService.getDetailDataStatistics();
 
+            //再把数据存入redis缓存
             //把dataStatistics组装成dimensionResultBean以后再存到redis中
             //DimensionResultBean dimensionResultBean = new DimensionResultBean();
             //dimensionService.saveDimensionResultDataToRedis(dataStatistics);
@@ -38,7 +39,6 @@ public class VisualizController {
         map.put("categories", categories);
         map.put("ds", dataStatistics);
         map.put("code", 200);
-
         return map;
     }
 

@@ -1,5 +1,6 @@
 package com.arviiin.dataquality.service.impl;
 
+import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DataQualityCalculationService;
@@ -54,6 +55,57 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
 
         // "数据非脆弱性":
         float dataNonVulnerabilityResult = (float)dimensionResultData.getDataNonVulnerability()/100;
+        logger.info("数据非脆弱性"+dataNonVulnerabilityResult+"");
+
+        double result = (dataFileCompletenessResult+dataValueCompletenessResult)/2.0 * weightBean.getCompleteness()  +
+                (referentialConsistencyResult+formatConsistencyResult)/2.0 * weightBean.getConsistency() +
+                dataRecordComplianceResult * weightBean.getCompliance() +
+                rangeAccuracyResult * weightBean.getAccuracy() +
+                recordUniquenessResult * weightBean.getUniqueness() +
+                timeBasedTimelinessResult * weightBean.getTimeliness() +
+                dataNonVulnerabilityResult * weightBean.getVulnerability();
+        return result;
+    }
+
+    @Override
+    public Double dimensionDetailWeightCalculation(DimensionDetailResultBean dimensionDetailResultBean, WeightBean weightBean) {
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultBean.getDataFileCompletenessResult() / dimensionDetailResultBean.getExpectedTotalRecordAmount();
+        logger.info( "数据文件完备性"+dataFileCompletenessResult);
+
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultBean.getDataValueCompletenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataValueCompleteness();
+        logger.info("数据值完备性"+ dataValueCompletenessResult);
+
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = 1 - (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
+        logger.info("数据引用一致性"+ (1 - referentialConsistencyResult));
+
+
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultBean.getFormatConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfFormatConsistency();
+        logger.info( "数据格式一致性"+formatConsistencyResult);
+
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultBean.getDataRecordComplianceResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataRecordCompliance();
+        logger.info( "数据记录依从性"+dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultBean.getRangeAccuracyResult() / dimensionDetailResultBean.getTotalRecordAmountOfRangeAccuracy();
+        logger.info("数据范围准确性"+ rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultBean.getRecordUniquenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfRecordUniqueness();
+        logger.info( "数据记录唯一性"+recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultBean.getTimeBasedTimelinessResult() / dimensionDetailResultBean.getTotalRecordAmountOfTimeBasedTimeliness();
+        logger.info("基于时间段的时效性"+ timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultBean.getDataNonVulnerabilityResult()/100;
         logger.info("数据非脆弱性"+dataNonVulnerabilityResult+"");
 
         double result = (dataFileCompletenessResult+dataValueCompletenessResult)/2.0 * weightBean.getCompleteness()  +

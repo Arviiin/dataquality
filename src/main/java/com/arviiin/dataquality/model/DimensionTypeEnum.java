@@ -2,16 +2,39 @@ package com.arviiin.dataquality.model;
 
 public enum DimensionTypeEnum {
 
-    /**
-     * 类型枚举
-     * 分为:隐藏类型,普通输入类型，下拉框类型，滑块类型,多国语类型,文本类型,日期类型,日期含时间类型,数字类型
-     * @author jlzhuang
-     * 这里是作为类成员而不是枚举文件定义的。枚举文件定义可参考RequestMethod类型。
-     */
-    /*public enum TYPE{ HIDDEN,CODE,SELECT,SWITCH,MULTLANG,TEXT,DATE,DATETIME,NUM};
-    *//**
-     * 输入类型
-     * @return
-     *//*
-    TYPE inputType() default TYPE.CODE;*/
+    //枚举类的实例对象必须在最前面先定义，而且必须每个实例对象都必须维护上chinese成员变量
+    DATA_FILE_COMPLETENESS("数据文件完备性"),
+
+    DATA_VALUE_COMPLETENESS("数据值完备性"),
+
+    REFERENTIAL_CONSISTENCY("数据引用一致性"),
+
+    FORMAT_CONSISTENCY("数据格式一致性"),
+
+    DATA_RECORD_COMPLIANCE("数据记录依从性"),
+
+    RANGE_ACCURACY("数据范围准确性"),
+
+    RECORD_UNIQUENESS("数据记录唯一性"),
+
+    TIME_BASED_TIMELINESS("基于时间段的时效性"),
+
+    DATA_NON_VULNERABILITY("数据非脆弱性");
+
+    /*SPRING("春天"),
+    SUMMER("夏天"),
+    AUMUTN("秋天"),
+    WINTER("冬天");*/
+
+    String name;
+
+    //枚举类型的构造函数默认为private，因为枚举类型的初始化要在当前枚举类中完成。
+    DimensionTypeEnum (String name){
+        this.name= name;
+    }
+
+    public String getName(){
+        return name;
+    }
+
 }
