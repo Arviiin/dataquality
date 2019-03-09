@@ -140,7 +140,7 @@ public class UserController extends BaseController{
      * 1表示原密码不正确
      * 2 失败
      */
-    @RequestMapping(value = "user/update_password", method = RequestMethod.POST)
+    @RequestMapping(value = "user/update_password", method = RequestMethod.POST)//讲道理更新应该用put,但前台用put过于麻烦，就用post了
     public ResponseEntity<JsonResult> updatePassword (@RequestParam("username") String username,
                                                       @RequestParam("password") String password,
                                                       @RequestParam(value = "new_password" ,required = true,defaultValue = "NO") String newPassword){
@@ -175,7 +175,7 @@ public class UserController extends BaseController{
      *   * 0表示成功
      *   * 1失败
      */
-    @RequestMapping(value = "user/update_profile", method = RequestMethod.POST)
+    @RequestMapping(value = "user/update_profile", method = RequestMethod.POST)//讲道理更新应该用put,但前台用put过于麻烦，就用post了
     public ResponseEntity<JsonResult> updateProfile (@RequestParam("username") String username,
                                                      @RequestParam("company") String company,
                                                      @RequestParam("email") String email,
