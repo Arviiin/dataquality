@@ -22,12 +22,12 @@ public class LoginRegController extends BaseController{
 
     @RequestMapping("/login_error")
     public ModelMap loginError() {
-        return new ModelMap("error", "登录失败!");
+        return new ModelMap(ERROR_STRING, "登录失败!");
     }
 
     @RequestMapping("/login_success")
     public ModelMap loginSuccess() {
-        return new ModelMap("success", "登录成功!");
+        return new ModelMap(SUCCESS_STRING, "登录成功!");
     }
 
     /**
@@ -39,7 +39,7 @@ public class LoginRegController extends BaseController{
      */
     @RequestMapping("/login_page")
     public ModelMap loginPage() {
-        return new ModelMap("error", "尚未登录，请登录!");
+        return new ModelMap(ERROR_STRING, "尚未登录，请登录!");
     }
 
     /**
@@ -71,12 +71,12 @@ public class LoginRegController extends BaseController{
         int result =  Integer.parseInt(regMap.get("code"));
         if (result == 0) {
             //成功
-            return new JsonResult("success", "注册成功!");
+            return new JsonResult(SUCCESS_STRING, "注册成功!");
         } else if (result == 1) {
-            return new JsonResult("error", "用户名重复，注册失败!");
+            return new JsonResult(ERROR_STRING, "用户名重复，注册失败!");
         } else {
             //失败
-            return new JsonResult("error", "注册失败!");
+            return new JsonResult(ERROR_STRING, "注册失败!");
         }
     }
 

@@ -30,7 +30,7 @@ public class RedisController extends BaseController{
         Long resExpire = redisUtil.expire("20182018", 60, RedisConstants.datebase1);//设置key过期时间
         logger.info("resExpire="+resExpire);
         String res = redisUtil.get("20182018", RedisConstants.datebase1);
-        return ModelMapResponse(SUCCESS, res, "执行成功");
+        return ModelMapResponse(SUCCESS_CODE, res, "执行成功");
     }
  
 }

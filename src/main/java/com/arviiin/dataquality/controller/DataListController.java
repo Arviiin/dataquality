@@ -51,10 +51,10 @@ public class DataListController extends BaseController{
             dataMap.put("tableData",tableData);
 
             r.setResult(dataMap);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
@@ -68,10 +68,10 @@ public class DataListController extends BaseController{
             List<String> allTableNameList = dataListService.getAllTableNameByDbName(dbname);
 
             r.setResult(allTableNameList);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);

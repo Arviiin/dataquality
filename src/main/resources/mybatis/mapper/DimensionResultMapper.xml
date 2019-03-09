@@ -13,4 +13,26 @@
         SELECT * FROM dimension_result WHERE id = (SELECT max(id) FROM dimension_result)
     </select>
 
+    <insert id="saveDimensionScore" useGeneratedKeys="true" keyProperty="dimensionScore.id" keyColumn="id">
+        INSERT INTO dimension_score set
+            data_file_completeness_score=#{dimensionScore.dataFileCompletenessScore},
+            data_value_completeness_score=#{dimensionScore.dataValueCompletenessScore},
+            data_completeness_score=#{dimensionScore.dataCompletenessScore},
+
+            referential_consistency_score=#{dimensionScore.referentialConsistencyScore},
+            format_consistency_score=#{dimensionScore.formatConsistencyScore},
+            data_consistency_score=#{dimensionScore.dataConsistencyScore},
+
+            data_record_compliance_score=#{dimensionScore.dataRecordComplianceScore},
+            range_accuracy_score=#{dimensionScore.rangeAccuracyScore},
+            record_uniqueness_score=#{dimensionScore.recordUniquenessScore},
+            time_based_timeliness_score=#{dimensionScore.timeBasedTimelinessScore},
+            data_non_vulnerability_score=#{dimensionScore.dataNonVulnerabilityScore},
+
+            total_data_quality_score=#{dimensionScore.totalDataQualityScore},
+
+            createtime=#{dimensionScore.createtime},
+            updatetime=#{dimensionScore.updatetime}
+    </insert>
+
 </mapper>

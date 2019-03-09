@@ -72,10 +72,10 @@ public class DimensionController extends BaseController{
             dimensionService.saveDimensionDetailResultData(dimensionDetailResultBean);
             //存入redis
             dimensionService.saveDimensionDetailResultDataToRedis(dimensionDetailResultBean);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);

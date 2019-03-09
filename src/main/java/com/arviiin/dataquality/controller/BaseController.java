@@ -5,8 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
 
 public abstract class BaseController{
-	public final static String SUCCESS="1";
-	public final  static String  FAIL="0";
+	public final static String SUCCESS_CODE = "0";
+	public final  static String  FAIL_CODE = "1";
+	public final  static String  FAIL_STRING = "fail";
+	public final  static String  OK = "ok";
+	public final  static String  ERROR_STRING = "error";
+	public final static String SUCCESS_STRING = "success";
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 

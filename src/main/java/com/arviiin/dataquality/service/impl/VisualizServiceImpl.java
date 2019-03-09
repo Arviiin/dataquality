@@ -19,12 +19,16 @@ public class VisualizServiceImpl implements VisualizService {
 
     @Autowired
     private RedisMapper redisMapper;
+
+    /*@Autowired
+    private VisualizMapper visualizMapper;*/
     /**
      * 获取表的横坐标
      * @return
      */
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
+        //categories = visualizMapper.getCategories();
         categories.add("1");
         categories.add("2");
         categories.add("3");

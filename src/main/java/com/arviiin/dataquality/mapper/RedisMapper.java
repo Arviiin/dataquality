@@ -3,6 +3,7 @@ package com.arviiin.dataquality.mapper;
 import com.arviiin.dataquality.config.RedisConstants;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
+import com.arviiin.dataquality.model.DimensionScore;
 import com.arviiin.dataquality.util.JsonUtils;
 import com.arviiin.dataquality.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,9 @@ public class RedisMapper {
     public DimensionDetailResultBean getDimensionDetailResultDataFromRedis() {
         String dimensionDetailResult = redisUtil.get("dimensionDetailResult", RedisConstants.datebase1);
         return  JsonUtils.jsonToPojo(dimensionDetailResult, DimensionDetailResultBean.class);
+    }
+
+    public void saveDimensionScoreToRedis(DimensionScore dimensionScore) {
+        redisUtil.set("dimensionScore",JsonUtils.objectToJson(dimensionScore), RedisConstants.datebase1);
     }
 }

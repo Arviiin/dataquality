@@ -25,10 +25,10 @@ public class UserController extends BaseController{
         try {
             User user = userService.getUserById(id);
             r.setResult(user);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
@@ -44,10 +44,10 @@ public class UserController extends BaseController{
         try {
             List<User> users = userService.getUserList();
             r.setResult(users);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
@@ -65,14 +65,14 @@ public class UserController extends BaseController{
             int orderId = userService.add(user);
             if (orderId < 0) {
                 r.setResult(orderId);
-                r.setStatus("fail");
+                r.setStatus(FAIL_STRING);
             } else {
                 r.setResult(orderId);
-                r.setStatus("ok");
+                r.setStatus(OK);
             }
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
 
             e.printStackTrace();
         }
@@ -91,14 +91,14 @@ public class UserController extends BaseController{
             int ret = userService.delete(id);
             if (ret < 0) {
                 r.setResult(ret);
-                r.setStatus("fail");
+                r.setStatus(FAIL_STRING);
             } else {
                 r.setResult(ret);
-                r.setStatus("ok");
+                r.setStatus(OK);
             }
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
 
             e.printStackTrace();
         }
@@ -117,14 +117,14 @@ public class UserController extends BaseController{
             int ret = userService.update(id, user);
             if (ret < 0) {
                 r.setResult(ret);
-                r.setStatus("fail");
+                r.setStatus(FAIL_STRING);
             } else {
                 r.setResult(ret);
-                r.setStatus("ok");
+                r.setStatus(OK);
             }
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
 
             e.printStackTrace();
         }
@@ -151,17 +151,17 @@ public class UserController extends BaseController{
             int ret = userService.updatePassword(username,password,newPassword);
             if (ret == 2) {
                 r.setResult(ret);
-                r.setStatus("fail");
+                r.setStatus(FAIL_STRING);
             } else if (ret == 0){
                 r.setResult(ret);
-                r.setStatus("ok");
+                r.setStatus(OK);
             } else {
                 r.setResult(ret);
                 r.setStatus("password error");
             }
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
@@ -173,7 +173,7 @@ public class UserController extends BaseController{
      * @param
      * @return
      *   * 0表示成功
-     *      * 1失败
+     *   * 1失败
      */
     @RequestMapping(value = "user/update_profile", method = RequestMethod.PUT)
     public ResponseEntity<JsonResult> updateProfile (@RequestParam("username") String username,
@@ -186,14 +186,14 @@ public class UserController extends BaseController{
             int ret = userService.updateProfile(username,company,email,telephone);
             if (ret == 1) {
                 r.setResult(ret);
-                r.setStatus("fail");
+                r.setStatus(FAIL_STRING);
             } else if (ret == 0){
                 r.setResult(ret);
-                r.setStatus("ok");
+                r.setStatus(OK);
             }
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);

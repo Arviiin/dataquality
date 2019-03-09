@@ -119,10 +119,10 @@ public class DimensionSingleThreadController extends BaseController{
             dimensionService.saveDimensionResultData(dimensionResultBean);
             //存入redis
             dimensionService.saveDimensionResultDataToRedis(dimensionResultBean);
-            r.setStatus("ok");
+            r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus("error");
+            r.setStatus(ERROR_STRING);
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
