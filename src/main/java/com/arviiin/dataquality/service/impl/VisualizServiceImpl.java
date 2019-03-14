@@ -29,7 +29,7 @@ public class VisualizServiceImpl implements VisualizService {
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
         //categories = visualizMapper.getCategories();
-        categories.add("1");
+        /*categories.add("1");
         categories.add("2");
         categories.add("3");
         categories.add("4");
@@ -37,7 +37,7 @@ public class VisualizServiceImpl implements VisualizService {
         categories.add("6");
         categories.add("7");
         categories.add("8");
-        categories.add("9");
+        categories.add("9");*/
 
         /*categories.add("文件完备性");
         categories.add("值完备性");
@@ -48,6 +48,14 @@ public class VisualizServiceImpl implements VisualizService {
         categories.add("记录唯一性");
         categories.add("时效性");
         categories.add("非脆弱性");*/
+
+        categories.add("完备性");
+        categories.add("一致性");
+        categories.add("依从性");
+        categories.add("准确性");
+        categories.add("唯一性");
+        categories.add("时效性");
+        categories.add("保密性");
         return categories;
     }
 
@@ -92,6 +100,12 @@ public class VisualizServiceImpl implements VisualizService {
         return dataStatistics;
     }
 
+    /**
+    * @Author: jlzhuang
+    * @Date:
+    * @Description: 得到9种性的结果
+    * @Version 1.0.0
+    */
     @Override
     public List<Float> getDetailDataStatistics() {
         DimensionDetailResultBean dimensionDetailResultData = dimensionResultMapper.getDimensionDetailResultData();
@@ -134,6 +148,59 @@ public class VisualizServiceImpl implements VisualizService {
         return dataStatistics;
     }
 
+    /**
+     * @Author: jlzhuang
+     * @Date:
+     * @Description: 得到7种性的结果
+     * @Version 1.0.0
+     */
+    @Override
+    public List<Float> getSevenDetailDataStatistics() {
+        DimensionDetailResultBean dimensionDetailResultData = dimensionResultMapper.getDimensionDetailResultData();
+        List<Float> dataStatistics = new ArrayList<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
+        //完备性
+        dataStatistics.add((dataFileCompletenessResult+dataValueCompletenessResult)/2f);
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
+        //一致性
+        dataStatistics.add((referentialConsistencyResult+formatConsistencyResult)/2f);
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
+        dataStatistics.add(dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
+        dataStatistics.add(rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
+        dataStatistics.add(recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
+        dataStatistics.add(timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
+        dataStatistics.add(dataNonVulnerabilityResult);
+
+        return dataStatistics;
+    }
+
+    /**
+    * @Author: jlzhuang
+    * @Date:
+    * @Description: 九个性的数
+    * @Version 1.0.0
+    */
     @Override
     public List<Float> getDataStatisticsFromRedis() {
         DimensionDetailResultBean dimensionDetailResultData = redisMapper.getDimensionDetailResultDataFromRedis();
@@ -152,6 +219,54 @@ public class VisualizServiceImpl implements VisualizService {
         // "数据格式一致性":
         float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
         dataStatistics.add(formatConsistencyResult);
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
+        dataStatistics.add(dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
+        dataStatistics.add(rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
+        dataStatistics.add(recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
+        dataStatistics.add(timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
+        dataStatistics.add(dataNonVulnerabilityResult);
+
+        return dataStatistics;
+    }
+
+
+    /**
+     * @Author: jlzhuang
+     * @Date:
+     * @Description: 7个性的数
+     * @Version 1.0.0
+     */
+    @Override
+    public List<Float> getSevenDataStatisticsFromRedis() {
+        DimensionDetailResultBean dimensionDetailResultData = redisMapper.getDimensionDetailResultDataFromRedis();
+        List<Float> dataStatistics = new ArrayList<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
+        //完备性
+        dataStatistics.add((dataFileCompletenessResult+dataValueCompletenessResult)/2f);
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
+        //一致性
+        dataStatistics.add((referentialConsistencyResult+formatConsistencyResult)/2f);
 
         // "数据记录依从性":
         float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();

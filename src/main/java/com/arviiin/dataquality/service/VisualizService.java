@@ -9,6 +9,8 @@ public interface VisualizService {
     List<Float> getDataStatistics();
 
     List<Float> getDetailDataStatistics();
+    List<Float> getSevenDetailDataStatistics();
 
     List<Float> getDataStatisticsFromRedis();
+    List<Float> getSevenDataStatisticsFromRedis();
 }
