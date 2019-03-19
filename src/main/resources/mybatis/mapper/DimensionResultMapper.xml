@@ -34,5 +34,9 @@
             createtime=#{dimensionScore.createtime},
             updatetime=#{dimensionScore.updatetime}
     </insert>
+    
+    <select id="getDimensionScore" resultType="com.arviiin.dataquality.model.DimensionScore">
+        select * from dimension_score where id = (select max(id) from dimension_score)
+    </select>
 
 </mapper>

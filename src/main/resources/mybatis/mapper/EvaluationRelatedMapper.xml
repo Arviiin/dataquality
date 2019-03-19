@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arviiin.dataquality.mapper.EvaluationRelatedMapper" >
+
+    <!--    mybatis默认会把mapper.xml映射为dao的实现     -->
+
+    <insert id="saveEvaluationInitData" >
+       INSERT INTO
+       		evaluation
+       		(evaluation_username,evaluation_name,evaluation_remark,createtime,updatetime)
+       	VALUES
+       		(#{username}, #{evaluationName}, #{evaluationRemark},#{createtime},#{updatetime})
+    </insert>
+
+    <!--把resultType从无序的Map改成有序的LinkedHashMap，可以直观感受到向上转型的好处，前面由于是用Map接收结果的，代码不用改
+    发现一个很搞笑的东西，把resultType改成resultMap会报找不到LinkedHashMap  因为resultMap是需要自己定义的，用来解决字段名和数据库名不一致的情况
+    IncompleteElementException: Could not find result map java.util.LinkedHashMap
+    即便是resultType，返回只写LinkedHashMap也会报错，真坑！！！-->
+    <select id="getEvaluationInitData" resultType="java.util.HashMap">
+        select evaluation_name,evaluation_remark
+        from evaluation where evaluation_username = #{username} and id = (
+            select max(id)
+            from evaluation
+        )
+    </select>
+    <!--<insert id="reg" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user set username=#{username},password=#{password},
+            company=#{company},email=#{email},telephone=#{telephone},enabled=#{enabled},
+            createtime=#{createtime},updatetime=#{updatetime}
+    </insert>-->
+</mapper>

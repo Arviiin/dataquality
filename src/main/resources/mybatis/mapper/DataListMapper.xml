@@ -5,7 +5,7 @@
 <mapper namespace="com.arviiin.dataquality.mapper.DataListMapper">
 
     <!--把resultType从无序的Map改成有序的LinkedHashMap，可以直观感受到向上转型的好处，前面由于是用Map接收结果的，代码不用改
-    发现一个很搞笑的东西，把resultType改成resultMap会报找不到LinkedHashMap
+    发现一个很搞笑的东西，把resultType改成resultMap会报找不到LinkedHashMap 因为resultMap是需要自己定义的，用来解决字段名和数据库名不一致的情况
     IncompleteElementException: Could not find result map java.util.LinkedHashMap
     即便是resultType，返回只写LinkedHashMap也会报错，真坑！！！-->
     <select id="getDataListByTableNameWithMap" resultType="java.util.LinkedHashMap" >

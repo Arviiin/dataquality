@@ -4,6 +4,8 @@ import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.DimensionScore;
 
+import java.util.Map;
+
 public interface DimensionResultService {
 
     DimensionResultBean getDimensionResultData();
@@ -13,4 +15,9 @@ public interface DimensionResultService {
     Integer saveDimensionScore(DimensionScore dimensionScore);
 
     void saveDimensionScoreToRedis(DimensionScore dimensionScore);
+
+    Map<String,Object> getDimensionResultRatio(DimensionDetailResultBean dimensionDetailResultBean);
+
+    DimensionScore getDimensionScore();
+
 }
