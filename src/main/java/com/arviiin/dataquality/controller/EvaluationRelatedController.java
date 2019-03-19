@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 @RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
 public class EvaluationRelatedController extends BaseController{
@@ -80,6 +78,12 @@ public class EvaluationRelatedController extends BaseController{
                 dimensionDetailResultBean = dimensionResultService.getDimensionDetailResultData();
             }
             dataMap.put("dimensionDetailResultBean",dimensionDetailResultBean);
+
+            //拿时间凑编号
+            Timestamp updatetime = dimensionDetailResultBean.getUpdatetime();
+            //2019-03-01 10:42:49.362
+            String substring = updatetime.toString().replaceAll("-", "").replace(" ","").replace(".","").replaceAll(":","");//20190301
+            dataMap.put("evaluationNumber","SJZLPJ"+substring);
             //拿到良率
             Map<String,Object>  dimensionResultRatioBean = dimensionResultService.getDimensionResultRatio(dimensionDetailResultBean);
             dataMap.put("dimensionResultRatioBean",dimensionResultRatioBean);
