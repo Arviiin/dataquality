@@ -79,7 +79,7 @@ public class EvaluationRelatedController extends BaseController{
                 //DimensionResultBean dimensionResultData = dimensionResultService.getDimensionResultData();
                 dimensionDetailResultBean = dimensionResultService.getDimensionDetailResultData();
             }
-            dataMap.put("weightResult",dimensionDetailResultBean);
+            dataMap.put("dimensionDetailResultBean",dimensionDetailResultBean);
             //拿到良率
             Map<String,Object>  dimensionResultRatioBean = dimensionResultService.getDimensionResultRatio(dimensionDetailResultBean);
             dataMap.put("dimensionResultRatioBean",dimensionResultRatioBean);
