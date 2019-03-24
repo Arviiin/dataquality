@@ -9,6 +9,10 @@ public interface WeightMapper {
 
     WeightBean getDefaultWeightResult();
 
+    void saveWeightBean(WeightBean weightResult);
+
+    WeightBean getWeightResult();
+
     //这里打算去redis里面拿指标的得分，然后进行和权重进行计算。
 
 

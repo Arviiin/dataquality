@@ -13,6 +13,16 @@ public class WeightBean implements Serializable {
     private Double timeliness;
     private Double vulnerability;
 
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Integer getId() {
         return id;
     }

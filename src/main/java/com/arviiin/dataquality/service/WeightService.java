@@ -10,4 +10,7 @@ public interface WeightService {
 
     WeightBean getDefaultWeightResult();
 
+    void saveWeightBean(WeightBean weightResult);
+
+    WeightBean getWeightResult();
 }

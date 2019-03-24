@@ -27,4 +27,14 @@ public class WeightServiceImpl implements WeightService {
         return weightMapper.getDefaultWeightResult();
     }
 
+    @Override
+    public void saveWeightBean(WeightBean weightResult) {
+        weightMapper.saveWeightBean(weightResult);
+    }
+
+    @Override
+    public WeightBean getWeightResult() {
+        return weightMapper.getWeightResult();
+    }
+
 }

@@ -2,7 +2,6 @@ package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
-import com.arviiin.dataquality.model.DimensionScore;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DimensionResultService;
@@ -13,7 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
 public class EvaluationRelatedController extends BaseController{
@@ -28,8 +28,6 @@ public class EvaluationRelatedController extends BaseController{
 
     @Autowired
     private RedisMapper redisMapper;
-
-
 
     @RequestMapping(value = "/data/evaluation_init", method = RequestMethod.POST)//讲道理更新应该用put,但前台用put过于麻烦，就用post了
     public ResponseEntity<JsonResult> saveEvaluationInitData (@RequestParam("username") String username,
@@ -60,14 +58,14 @@ public class EvaluationRelatedController extends BaseController{
         try {
             //创建map用于装备数据
             Map<String, Object> dataMap = new HashMap<>();
-            //获取数据库中的初始设置里的数据
+            //获取数据库中的初始设置里的数据  这里注意若用户之前没初始化设置，则会报错。
             Map<String, Object> evaluationInitMap = evaluationRelatedService.getEvaluationInitData(username);
             dataMap.put("evaluationName",evaluationInitMap.get("evaluation_name"));
             dataMap.put("evaluationRemark",evaluationInitMap.get("evaluation_remark"));
             dataMap.put("evaluationRemarkUsername",username);
 
             //权重放进去
-            WeightBean weightResult = weightService.getDefaultWeightResult();
+            WeightBean weightResult = weightService.getWeightResult();
             dataMap.put("weightResult",weightResult);
             //合格的数量，和总数和良率放进去。
             //先从redis里面拿存进redis的详细数据
@@ -88,33 +86,18 @@ public class EvaluationRelatedController extends BaseController{
             Map<String,Object>  dimensionResultRatioBean = dimensionResultService.getDimensionResultRatio(dimensionDetailResultBean);
             dataMap.put("dimensionResultRatioBean",dimensionResultRatioBean);
 
-            //拿到分值
-            DimensionScore dimensionScore = dimensionResultService.getDimensionScore();
+            //拿到分值并把把分值格式化为保留后两位小数的字符串
+            Map<String,String> dimensionScore = dimensionResultService.formatDimensionScore(dimensionResultService.getDimensionScore());
             dataMap.put("dimensionScore",dimensionScore);
-            //**************开始组装col****************
-            List<Object> col = new ArrayList<>();
-            //拿到第一行数据，数据库字段名与相应数值
-            /*Map<String, Object> fieldObjectMap = dataMapList.get(0);
-            //拿到第一行数据库字段名
-            Set<String> filedSet = fieldObjectMap.keySet();
-            for (String field : filedSet) {
-                ColBean colBean = new ColBean();
-                colBean.setProp(field);
-                colBean.setLable(field);
-                col.add(colBean);
-            }
-            dataMap.put("clo",col);
-            //**************开始组装tableData****************
-
-            String tableData = JsonUtils.objectToJson(dataMapList);//不转成json，直接把dataMapList传到前台，别的没问题，就是时间乱码，因而还是建议转一下，变成13位的时间戳，交给前台处理
-            dataMap.put("tableData",tableData);*/
 
             r.setResult(dataMap);
             r.setStatus(OK);
         } catch (Exception e) {
-            r.setResult(e.getClass().getName() + ":" + e.getMessage());
+            //r.setResult(e.getClass().getName() + ":" + e.getMessage());
             r.setStatus(ERROR_STRING);
+            r.setResult("评估人名为空请进行初始化设置");
             e.printStackTrace();
+            logger.error("评估人名为空请进行初始化设置");
         }
         return ResponseEntity.ok(r);
     }

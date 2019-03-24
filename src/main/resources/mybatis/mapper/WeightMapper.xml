@@ -5,9 +5,16 @@
 <mapper namespace="com.arviiin.dataquality.mapper.WeightMapper">
 
     <select id="getDefaultWeightResult" resultType="com.arviiin.dataquality.model.WeightBean">
-        SELECT * FROM weight
+        SELECT * FROM weight where type = "1" ;
     </select>
 
-
+    <select id="getWeightResult" resultType="com.arviiin.dataquality.model.WeightBean">
+        SELECT * FROM weight where id = (select max(id) from weight);
+    </select>
+    
+    <insert id="saveWeightBean">
+        INSERT INTO weight (completeness,consistency,compliance,accuracy,uniqueness,timeliness,vulnerability,type)
+                values (#{completeness},#{consistency},#{compliance},#{accuracy},#{uniqueness},#{timeliness},#{vulnerability},#{type})
+    </insert>
 
 </mapper>

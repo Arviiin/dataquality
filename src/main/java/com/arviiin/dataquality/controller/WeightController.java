@@ -41,10 +41,14 @@ public class WeightController extends BaseController{
             //这里对权重是否使用默认进行判断，为空则使用默认
             WeightBean weightResult = JsonUtils.jsonToPojo(json,WeightBean.class);
             logger.info(weightResult.toString());
-            if (weightResult == null || weightResult.getCompleteness() == null || "".equals(weightResult.getCompleteness())){
-                //拿默认权重
+            if (weightResult == null || weightResult.getCompleteness() == 0.0 ){
+                //如果没传入权重则我们拿默认权重
                 weightResult = weightService.getDefaultWeightResult();
             }
+            //无论是否传入权重，我们都将权重保存到数据库中。
+            weightResult.setType("0");
+            weightService.saveWeightBean(weightResult);
+
             //从redis里面拿存进redis的详细数据
             DimensionDetailResultBean dimensionDetailResultBean = redisMapper.getDimensionDetailResultDataFromRedis();
             if (dimensionDetailResultBean == null) {

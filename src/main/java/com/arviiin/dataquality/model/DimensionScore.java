@@ -56,6 +56,21 @@ public class DimensionScore implements Serializable {
         this.dataNonVulnerabilityScore = dataNonVulnerabilityScore;
     }
 
+    public DimensionScore(Double dataFileCompletenessScore, Double dataValueCompletenessScore, Double dataCompletenessScore, Double referentialConsistencyScore, Double formatConsistencyScore, Double dataConsistencyScore, Double dataRecordComplianceScore, Double rangeAccuracyScore, Double recordUniquenessScore, Double timeBasedTimelinessScore, Double dataNonVulnerabilityScore, Double totalDataQualityScore) {
+        this.dataFileCompletenessScore = dataFileCompletenessScore;
+        this.dataValueCompletenessScore = dataValueCompletenessScore;
+        this.dataCompletenessScore = dataCompletenessScore;
+        this.referentialConsistencyScore = referentialConsistencyScore;
+        this.formatConsistencyScore = formatConsistencyScore;
+        this.dataConsistencyScore = dataConsistencyScore;
+        this.dataRecordComplianceScore = dataRecordComplianceScore;
+        this.rangeAccuracyScore = rangeAccuracyScore;
+        this.recordUniquenessScore = recordUniquenessScore;
+        this.timeBasedTimelinessScore = timeBasedTimelinessScore;
+        this.dataNonVulnerabilityScore = dataNonVulnerabilityScore;
+        this.totalDataQualityScore = totalDataQualityScore;
+    }
+
     public DimensionScore(Long id, Double dataFileCompletenessScore, Double dataValueCompletenessScore, Double dataCompletenessScore, Double referentialConsistencyScore, Double formatConsistencyScore, Double dataConsistencyScore, Double dataRecordComplianceScore, Double rangeAccuracyScore, Double recordUniquenessScore, Double timeBasedTimelinessScore, Double dataNonVulnerabilityScore, Double totalDataQualityScore, Timestamp createtime, Timestamp updatetime) {
         this.dataFileCompletenessScore = dataFileCompletenessScore;
         this.dataValueCompletenessScore = dataValueCompletenessScore;

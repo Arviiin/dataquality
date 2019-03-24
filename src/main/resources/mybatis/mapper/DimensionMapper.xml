@@ -5,7 +5,7 @@
 <mapper namespace="com.arviiin.dataquality.mapper.DimensionMapper">
 
     <select id="getExpectedTotalRecordAmount" resultType="java.lang.Integer">
-        SELECT max(${dimensionBean.columnname}) - min(${dimensionBean.columnname}) FROM ${dimensionBean.tablename}
+        SELECT max(${dimensionBean.columnname}) - min(${dimensionBean.columnname}) + 1 FROM ${dimensionBean.tablename}
     </select>
 
     <select id="getTotalRecordAmount" resultType="java.lang.Integer">
