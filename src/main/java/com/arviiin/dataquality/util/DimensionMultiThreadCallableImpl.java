@@ -69,7 +69,7 @@ public class DimensionMultiThreadCallableImpl implements Callable<Map<String,Obj
 				//dimensionResultBean.setReferentialConsistency(referentialConsistencyResult);
                 logger.info(totalRecordAmountOfReferentialConsistency+"");
                 logger.info(referentialConsistencyResult+"");
-				logger.info("数据引用一致性"+ (1 - (float)referentialConsistencyResult/totalRecordAmountOfReferentialConsistency)+"");
+				logger.info("数据引用一致性"+ (float)referentialConsistencyResult/totalRecordAmountOfReferentialConsistency+"");
 				break;
 
 			case "数据格式一致性":

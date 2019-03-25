@@ -6,11 +6,20 @@ public interface VisualizService {
 
     List<String> getCategories();
 
+    @Deprecated
     List<Float> getDataStatistics();
 
+    /**
+     * 九特性版本
+     * @return
+     */
     List<Float> getDetailDataStatistics();
     List<Float> getSevenDetailDataStatistics();
 
+    /**
+     * 九特性版本
+     * @return
+     */
     List<Float> getDataStatisticsFromRedis();
     List<Float> getSevenDataStatisticsFromRedis();
 }

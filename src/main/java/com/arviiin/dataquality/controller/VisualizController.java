@@ -32,13 +32,14 @@ public class VisualizController extends BaseController{
     @GetMapping("/data/visualization")
     public Map<String,Object> dataStatistics() {
         Map<String, Object> map = new LinkedHashMap<>();
+        //拿到七个大分类
         List<String> categories = visualizService.getCategories();
-        //先去redis里面找，如果没有再请求数据库
-        List<Float> dataStatistics = visualizService.getDataStatisticsFromRedis();
+        //先去redis里面找七个纵坐标，如果没有再请求数据库
+        List<Float> dataStatistics = visualizService.getSevenDataStatisticsFromRedis();
         if (dataStatistics == null){
             //请求数据库
-            //dataStatistics = visualizService.getDataStatistics();
-            dataStatistics = visualizService.getDetailDataStatistics();
+            //dataStatistics = visualizService.getDataStatistics();//这个拿的不是详细的
+            dataStatistics = visualizService.getSevenDetailDataStatistics();
 
             //再把数据存入redis缓存
             //把dataStatistics组装成dimensionResultBean以后再存到redis中

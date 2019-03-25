@@ -2,6 +2,7 @@ package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionMapper;
 import com.arviiin.dataquality.mapper.RedisMapper;
+import com.arviiin.dataquality.mapperTwo.DimensionTwoMapper;
 import com.arviiin.dataquality.model.DimensionBean;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
@@ -23,46 +24,51 @@ public class DimensionServiceImpl implements DimensionService {
     private static Logger logger = LoggerFactory.getLogger(DimensionServiceImpl.class);
 
     @Autowired
-    private DimensionMapper dimensionMapper;
+    private DimensionMapper dimensionOneMapper;
+
+    @Autowired
+    private DimensionTwoMapper dimensionTwoMapper;
 
     @Autowired
     private RedisMapper redisMapper;
 
     @Override
     public Integer getExpectedTotalRecordAmount(DimensionBean dimensionBean) {
-        return dimensionMapper.getExpectedTotalRecordAmount(dimensionBean);
+        return dimensionTwoMapper.getExpectedTotalRecordAmount(dimensionBean);
     }
 
+    /**
+     * 所有质量维度指标的总数都是用这个方法计算
+     */
     @Override
     public Integer getTotalRecordAmount(DimensionBean dimensionBean) {
         //这里暂时需要分两种情况，一种是当是引用的时候，这时候"tablename": "roles_user:roles   一种是其他，
         if (dimensionBean.getTablename().contains(":")){
             String[] split = dimensionBean.getTablename().split(":");
             String referenceTable = split[0];//引用表
-            return dimensionMapper.getTotalRecordAmount(referenceTable);
+            return dimensionTwoMapper.getTotalRecordAmount(referenceTable);
         }
-        return dimensionMapper.getTotalRecordAmount(dimensionBean.getTablename());
+        return dimensionTwoMapper.getTotalRecordAmount(dimensionBean.getTablename());
     }
 
     @Override
     public Integer getDataFileCompletenessResult(DimensionBean dimensionBean) {
-        return dimensionMapper.getDataFileCompletenessResult(dimensionBean);
+        return dimensionTwoMapper.getDataFileCompletenessResult(dimensionBean);
     }
 
     @Override
     public Integer getDataValueCompletenessResult(DimensionBean dimensionBean) {
-        return dimensionMapper.getDataValueCompletenessResult(dimensionBean);
+        return dimensionTwoMapper.getDataValueCompletenessResult(dimensionBean);
     }
 
     /**
-     *     "columnname": "rid:id",
-     *     "dimensionname": "引用一致性",
-     *     "rule": "string",
-     *     "tablename": "roles_user:roles"
+     * "dimensionname": "引用一致性",
+     * "rule": "string",
+     * "tablename": "roles_user:roles"
      *
-     *     若不是引用表中数据，而是自己定义的，
-     * 		如，一表字段只允许填铂金会员，黄金会员，
-     * 		白银会员。此时规则里要填上相应引用字段以、分割
+     * 若不是引用表中数据，而是自己定义的，
+     * 如某一表字段只允许填：砖石会员、铂金会员、黄金会员、白银会员、青铜会员。
+     * 此时规则里要填上相应引用字段以、分割
      * @param dimensionBean
      * @return
      */
@@ -80,15 +86,16 @@ public class DimensionServiceImpl implements DimensionService {
             String[] split1 = dimensionBean.getColumnname().split(":");
             String referenceFiled = split1[0];//引用字段
             String beReferenceFiled = split1[1];//被引用字段
-            return dimensionMapper.getReferentialConsistencyResult(referenceTable, referenceFiled,beReferenceFiled,beReferenceTable);
+            return dimensionTwoMapper.getReferentialConsistencyResult(referenceTable, referenceFiled,beReferenceFiled,beReferenceTable);
         }else {
+            //考虑到参照引用的可能不是表中的，而是几个固定字段，我们可以填写相应的字段范围
             String rule = dimensionBean.getRule();
             String[] split = rule.split("、");
             HashSet<String> strings = new HashSet<>();
             for (String s : split) {
                 strings.add(s);
             }
-            List<String> referentialConsistencyResultWithInput = dimensionMapper.getReferentialConsistencyResultWithInput(dimensionBean);
+            List<String> referentialConsistencyResultWithInput = dimensionTwoMapper.getReferentialConsistencyResultWithInput(dimensionBean);
             int cnt = 0;
             for (String s : referentialConsistencyResultWithInput) {
                 if (strings.contains(s))
@@ -100,7 +107,7 @@ public class DimensionServiceImpl implements DimensionService {
 
     @Override
     public Integer getFormatConsistencyResult(DimensionBean dimensionBean) {
-        List<String> formatConsistencyResult = dimensionMapper.getFormatConsistencyResult(dimensionBean);
+        List<String> formatConsistencyResult = dimensionTwoMapper.getFormatConsistencyResult(dimensionBean);
         //这里我先判断邮箱规则
         int cnt = 0;
         switch (dimensionBean.getRule()){
@@ -130,7 +137,7 @@ public class DimensionServiceImpl implements DimensionService {
 
     @Override
     public Integer getDataRecordComplianceResult(DimensionBean dimensionBean) {
-        List<String> dataRecordComplianceResult = dimensionMapper.getDataRecordComplianceResult(dimensionBean);
+        List<String> dataRecordComplianceResult = dimensionTwoMapper.getDataRecordComplianceResult(dimensionBean);
         //家庭住址
         String regex = ".*(省|自治区|上海|北京|天津|重庆).*(市|自治州).*(区|县|市|旗)(.*(镇|乡|街道))?";
         Pattern p = Pattern.compile(regex);//如果放在方法里，频繁的new对象很可怕！占用太多资源，甚至OOM
@@ -149,12 +156,12 @@ public class DimensionServiceImpl implements DimensionService {
         String[] split = rule.split(":");
         String begin = split[0];//开始范围
         String end = split[1];//结束范围
-        return dimensionMapper.getRangeAccuracyResult(dimensionBean, begin, end);
+        return dimensionTwoMapper.getRangeAccuracyResult(dimensionBean, begin, end);
     }
 
     @Override
     public Integer getRecordUniquenessResult(DimensionBean dimensionBean) {
-        return dimensionMapper.getRecordUniquenessResult(dimensionBean);
+        return dimensionTwoMapper.getRecordUniquenessResult(dimensionBean);
     }
 
     @Override
@@ -162,15 +169,15 @@ public class DimensionServiceImpl implements DimensionService {
         String rule = dimensionBean.getRule();
         String[] split = rule.split(":");
         String beginTime = split[0];
-        String endTime = split[1];
-        return dimensionMapper.getTimeBasedTimelinessResult(dimensionBean, beginTime, endTime);
+        String endTime = split[1];                                          //左包含，右不包含
+        return dimensionTwoMapper.getTimeBasedTimelinessResult(dimensionBean, beginTime, endTime);
     }
 
     /**
      * 注册时候
      * user.setSalt(UUID.randomUUID().toString().substring(0,5));
      * user.setPassword(WendaUtil.MD5(password+user.getSalt()));
-     *
+     * 保密性 = 数据加密的强度 / 100。
      * 登录时候
      * if(!WendaUtil.MD5(password+user.getSalt()).equals(user.getPassword())){
      * @param dimensionBean
@@ -193,11 +200,15 @@ public class DimensionServiceImpl implements DimensionService {
         return dataNonVulnerability;
     }
 
+
+    /*******************  分割线：下面开始是保存到数据库或者redis里面的 使用的是dimensionOneMapper  *******************/
+
+
     @Override
     public void saveDimensionResultData(DimensionResultBean dimensionResultBean) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         dimensionResultBean.setCreatetime(timestamp);
-        dimensionMapper.saveDimensionResultData(dimensionResultBean);
+        dimensionOneMapper.saveDimensionResultData(dimensionResultBean);
     }
 
     @Override
@@ -213,7 +224,7 @@ public class DimensionServiceImpl implements DimensionService {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         dimensionDetailResultBean.setCreatetime(timestamp);
         dimensionDetailResultBean.setUpdatetime(timestamp);
-        Integer integer = dimensionMapper.saveDimensionDetailResultData(dimensionDetailResultBean);
+        Integer integer = dimensionOneMapper.saveDimensionDetailResultData(dimensionDetailResultBean);
         if (integer <= 0){
             logger.error("维度信息未能正确传入mysql");
         }

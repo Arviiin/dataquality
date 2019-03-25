@@ -1,28 +1,17 @@
 package com.arviiin.dataquality.controller;
 
-import com.arviiin.dataquality.model.DimensionBean;
-import com.arviiin.dataquality.model.DimensionResultBean;
-import com.arviiin.dataquality.model.JsonResult;
-import com.arviiin.dataquality.service.DimensionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
-
 //@RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
 public class DimensionSingleThreadController extends BaseController{
 
-    @Autowired
-    private DimensionService dimensionService;
+    /*@Autowired
+    private DimensionService dimensionService;*/
 
     /**
      * 接收前端传来的指标维度相关的数据
      * @param dimensionBeanList
      * @return
      */
-    @PostMapping(value = "data/dimension")
+    /*@PostMapping(value = "data/dimension")
     public ResponseEntity<JsonResult> getDimensionIndexResult (@RequestBody List<DimensionBean> dimensionBeanList){
         JsonResult r = new JsonResult();
         DimensionResultBean dimensionResultBean = new DimensionResultBean();
@@ -55,7 +44,7 @@ public class DimensionSingleThreadController extends BaseController{
                         dimensionResultBean.setReferentialConsistency(referentialConsistencyResult);
 //                        logger.info(totalRecordAmount+"");
 //                        logger.info(referentialConsistencyResult+"");
-                        logger.info("数据引用一致性"+ (1 - (float)referentialConsistencyResult/totalRecordAmount)+"");
+                        logger.info("数据引用一致性"+ (float)referentialConsistencyResult/totalRecordAmount+"");
                         break;
 
                     case "数据格式一致性":
@@ -126,7 +115,7 @@ public class DimensionSingleThreadController extends BaseController{
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
-    }
+    }*/
 
 }
 /*

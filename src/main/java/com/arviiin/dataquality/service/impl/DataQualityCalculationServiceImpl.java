@@ -37,8 +37,8 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
 
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionResultData.getReferentialConsistency() / totalRecordAmount;
-        logger.info("数据引用一致性"+ (1 - referentialConsistencyResult));
+        float referentialConsistencyResult = (float)dimensionResultData.getReferentialConsistency() / totalRecordAmount;
+        logger.info("数据引用一致性"+ referentialConsistencyResult);
 
 
         // "数据格式一致性":
@@ -88,8 +88,8 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
 
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
-        logger.info("数据引用一致性"+ (1 - referentialConsistencyResult));
+        float referentialConsistencyResult = (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
+        logger.info("数据引用一致性"+ referentialConsistencyResult);
 
 
         // "数据格式一致性":

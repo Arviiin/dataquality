@@ -20,12 +20,12 @@ public class LoginRegController extends BaseController{
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/login_error")
+    @GetMapping("/login_error")
     public ModelMap loginError() {
         return new ModelMap(ERROR_STRING, "登录失败!");
     }
 
-    @RequestMapping("/login_success")
+    @GetMapping("/login_success")
     public ModelMap loginSuccess() {
         return new ModelMap(SUCCESS_STRING, "登录成功!");
     }
@@ -37,7 +37,7 @@ public class LoginRegController extends BaseController{
      *
      * @return
      */
-    @RequestMapping("/login_page")
+    @GetMapping("/login_page")
     public ModelMap loginPage() {
         return new ModelMap(ERROR_STRING, "尚未登录，请登录!");
     }

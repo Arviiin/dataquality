@@ -19,14 +19,16 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
 
     @Bean
+    //@Primary//指定主要实现,一个接口有多个实现时,用@Autowired引入时,可以直接引入带有@Primary 注解的实现，不然直接使用@Autowired会报错，
+    // 当然可以不加@Primary  使用其他方式引入如@Resource(name = "dsOne")等方式。
     @ConfigurationProperties(prefix = "spring.datasource.one")
-    DataSource dsOne (){
+    public DataSource dsOne (){
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
     @ConfigurationProperties(prefix="spring.datasource.two")
-    DataSource dsTwo(){
+    public DataSource dsTwo(){
         return DruidDataSourceBuilder.create().build();
     }
 }

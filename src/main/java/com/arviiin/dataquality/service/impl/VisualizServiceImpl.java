@@ -2,6 +2,7 @@ package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.DimensionResultMapper;
 import com.arviiin.dataquality.mapper.RedisMapper;
+import com.arviiin.dataquality.mapper.VisualizMapper;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.service.VisualizService;
@@ -20,24 +21,15 @@ public class VisualizServiceImpl implements VisualizService {
     @Autowired
     private RedisMapper redisMapper;
 
-    /*@Autowired
-    private VisualizMapper visualizMapper;*/
+    @Autowired
+    private VisualizMapper visualizMapper;
     /**
      * 获取表的横坐标
      * @return
      */
     public List<String> getCategories() {
         List<String> categories = new ArrayList<>();
-        //categories = visualizMapper.getCategories();
-        /*categories.add("1");
-        categories.add("2");
-        categories.add("3");
-        categories.add("4");
-        categories.add("5");
-        categories.add("6");
-        categories.add("7");
-        categories.add("8");
-        categories.add("9");*/
+        //categories = visualizMapper.getCategories();//没有必要与数据库交互
 
         /*categories.add("文件完备性");
         categories.add("值完备性");
@@ -60,9 +52,10 @@ public class VisualizServiceImpl implements VisualizService {
     }
 
     /**
-     * 从Mysql中获取表的纵坐标
-     * @return
+     * 从Mysql中获取表的纵坐标的比值，已启用，因为使用的是DimensionResultBean
+     * @return  dimensionResultData
      */
+    @Deprecated
     public List<Float> getDataStatistics() {
         DimensionResultBean dimensionResultData = dimensionResultMapper.getDimensionResultData();
         List<Float> dataStatistics = new ArrayList<>();
@@ -75,7 +68,7 @@ public class VisualizServiceImpl implements VisualizService {
         dataStatistics.add(dataValueCompletenessResult);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionResultData.getReferentialConsistency() / totalRecordAmount;
+        float referentialConsistencyResult = (float)dimensionResultData.getReferentialConsistency() / totalRecordAmount;
         dataStatistics.add(referentialConsistencyResult);
 
         // "数据格式一致性":
@@ -118,7 +111,7 @@ public class VisualizServiceImpl implements VisualizService {
         dataStatistics.add(dataValueCompletenessResult);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        float referentialConsistencyResult = (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
         dataStatistics.add(referentialConsistencyResult);
 
         // "数据格式一致性":
@@ -166,7 +159,7 @@ public class VisualizServiceImpl implements VisualizService {
         dataStatistics.add((dataFileCompletenessResult+dataValueCompletenessResult)/2f);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        float referentialConsistencyResult =  (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
         // "数据格式一致性":
         float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
         //一致性
@@ -213,7 +206,7 @@ public class VisualizServiceImpl implements VisualizService {
         dataStatistics.add(dataValueCompletenessResult);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        float referentialConsistencyResult =  (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
         dataStatistics.add(referentialConsistencyResult);
 
         // "数据格式一致性":
@@ -262,7 +255,7 @@ public class VisualizServiceImpl implements VisualizService {
         dataStatistics.add((dataFileCompletenessResult+dataValueCompletenessResult)/2f);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        float referentialConsistencyResult = (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
         // "数据格式一致性":
         float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
         //一致性

@@ -62,8 +62,8 @@ public class DimensionResultServiceImpl implements DimensionResultService {
 
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
-        logger.info("数据引用一致性"+ (1 - referentialConsistencyResult));
+        float referentialConsistencyResult = (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
+        logger.info("数据引用一致性"+ referentialConsistencyResult);
         // "数据格式一致性":
         float formatConsistencyResult = (float)dimensionDetailResultBean.getFormatConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfFormatConsistency();
         logger.info( "数据格式一致性"+formatConsistencyResult);

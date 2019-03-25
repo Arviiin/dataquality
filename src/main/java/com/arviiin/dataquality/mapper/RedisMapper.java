@@ -12,16 +12,22 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Component(value = "RedisMapper")
 public class RedisMapper {
 
     @Autowired
     private RedisUtil redisUtil;
 
+    @Deprecated
     public void saveDimensionResultDataToRedis(DimensionResultBean dimensionResultBean) {
         redisUtil.set("dimensionResult",JsonUtils.objectToJson(dimensionResultBean), RedisConstants.datebase1);
     }
 
+    /**
+     * 现在多采用详细计数
+     * @return
+     */
+    @Deprecated
     public List<Float> getDataStatisticsFromRedis() {
         String dimensionResult = redisUtil.get("dimensionResult", RedisConstants.datebase1);
         DimensionResultBean dimensionResultBean = JsonUtils.jsonToPojo(dimensionResult, DimensionResultBean.class);
@@ -35,7 +41,7 @@ public class RedisMapper {
         dataStatistics.add(dataValueCompletenessResult);
 
         // "数据引用一致性":
-        float referentialConsistencyResult = 1 - (float)dimensionResultBean.getReferentialConsistency() / totalRecordAmount;
+        float referentialConsistencyResult = (float)dimensionResultBean.getReferentialConsistency() / totalRecordAmount;
         dataStatistics.add(referentialConsistencyResult);
 
         // "数据格式一致性":

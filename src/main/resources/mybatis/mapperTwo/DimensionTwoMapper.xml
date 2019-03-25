@@ -2,59 +2,58 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.arviiin.dataquality.mapper.DimensionMapper">
-
-    <select id="getExpectedTotalRecordAmount" resultType="java.lang.Integer">
-        SELECT max(${dimensionBean.columnname}) - min(${dimensionBean.columnname}) + 1 FROM ${dimensionBean.tablename}
-    </select>
+<mapper namespace="com.arviiin.dataquality.mapperTwo.DimensionTwoMapper">
 
     <select id="getTotalRecordAmount" resultType="java.lang.Integer">
         select count(*) from ${tablename}
     </select>
 
+    <select id="getExpectedTotalRecordAmount" resultType="java.lang.Integer">
+        SELECT max(${dimensionBean.columnname}) - min(${dimensionBean.columnname}) + 1 FROM ${dimensionBean.tablename}
+    </select>
+
+    <!--//完备性 = 非空的数量 / 所有值的数量-->
     <select id="getDataFileCompletenessResult" resultType="java.lang.Integer">
         select count(*) from ${dimensionBean.tablename}
     </select>
-
     <select id="getDataValueCompletenessResult" resultType="java.lang.Integer">
         select count(${dimensionBean.columnname}) from ${dimensionBean.tablename}
     </select>
 
+    <!--//一致性 = 一致性值的数量 / 所有值的数量-->
     <select id="getReferentialConsistencyResult" resultType="java.lang.Integer">
         SELECT count(*)  FROM ${referenceTable}
         WHERE ${referenceFiled} in (SELECT ${beReferenceFiled} FROM ${beReferenceTable})
     </select>
-
-
-
     <select id="getReferentialConsistencyResultWithInput" resultType="java.lang.String">
         SELECT ${dimensionBean.columnname} FROM ${dimensionBean.tablename}
     </select>
-
-
-
     <select id="getFormatConsistencyResult" resultType="java.lang.String">
         SELECT ${dimensionBean.columnname} FROM ${dimensionBean.tablename}
     </select>
 
+    <!--//依从性 = 符合依从性规则值的数量 / 所有值的数量-->
     <select id="getDataRecordComplianceResult" resultType="java.lang.String">
         SELECT ${dimensionBean.columnname} FROM ${dimensionBean.tablename}
     </select>
 
+    <!--//准确性 = 正确值的数量 / 所有值的数量-->
     <select id="getRangeAccuracyResult" resultType="java.lang.Integer">
         select count(*) from ${dimensionBean.tablename} where ${dimensionBean.columnname} BETWEEN ${begin} AND ${end}
     </select>
 
+    <!--//唯一性 = 1 - （重复值的数量 / 所有值的数量）  实际操作中还是直接取不重复的数量-->
     <select id="getRecordUniquenessResult" resultType="java.lang.Integer">
         SELECT COUNT(DISTINCT ${dimensionBean.columnname}) FROM ${dimensionBean.tablename}
     </select>
 
+    <!--//现实性 = 有效时间内值的数量 / 所有值的数量-->
     <select id="getTimeBasedTimelinessResult" resultType="java.lang.Integer">
         select count(*) from ${dimensionBean.tablename} where ${dimensionBean.columnname} BETWEEN #{beginTime} AND #{endTime}
     </select>
 
 
-    <insert id="saveDimensionResultData" useGeneratedKeys="true" keyProperty="dimensionResultBean.id" keyColumn="id">
+    <!--<insert id="saveDimensionResultData" useGeneratedKeys="true" keyProperty="dimensionResultBean.id" keyColumn="id">
         INSERT INTO dimension set total_record_amount=#{dimensionResultBean.totalRecordAmount},
                                    expected_total_record_amount=#{dimensionResultBean.expectedTotalRecordAmount},
                                    data_file_completeness=#{dimensionResultBean.dataFileCompleteness},
@@ -90,6 +89,6 @@
             data_non_vulnerability_result=#{dimensionDetailResultBean.dataNonVulnerabilityResult},
             createtime=#{dimensionDetailResultBean.createtime},
             updatetime=#{dimensionDetailResultBean.updatetime}
-    </insert>
+    </insert>-->
 
 </mapper>

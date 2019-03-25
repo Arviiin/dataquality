@@ -2,7 +2,6 @@ package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.model.DimensionBean;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
-import com.arviiin.dataquality.model.DimensionResultBean;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.service.DimensionService;
 import com.arviiin.dataquality.util.BeanUtils;
@@ -33,7 +32,6 @@ public class DimensionController extends BaseController{
     @PostMapping(value = "data/dimension")
     public ResponseEntity<JsonResult> getDimensionIndexResult (@RequestBody List<DimensionBean> dimensionBeanList){
         JsonResult r = new JsonResult();
-        DimensionResultBean dimensionResultBean = new DimensionResultBean();
         try {
             //创建数目固定的线程池
             ExecutorService exec = Executors.newFixedThreadPool(9);
@@ -68,9 +66,9 @@ public class DimensionController extends BaseController{
             }
             DimensionDetailResultBean dimensionDetailResultBean = BeanUtils.mapToBean(resultMap, DimensionDetailResultBean.class);
 
-            //存入mysql数据库
+            //将详细的结果存入mysql数据库
             dimensionService.saveDimensionDetailResultData(dimensionDetailResultBean);
-            //存入redis
+            //将详细的结果存入redis
             dimensionService.saveDimensionDetailResultDataToRedis(dimensionDetailResultBean);
             r.setStatus(OK);
         } catch (Exception e) {

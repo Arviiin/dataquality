@@ -66,7 +66,7 @@ public class DimensionMultiThreadRunnableImpl implements Runnable {
 				dimensionResultBean.setReferentialConsistency(referentialConsistencyResult);
 //                        logger.info(totalRecordAmount+"");
 //                        logger.info(referentialConsistencyResult+"");
-				logger.info("数据引用一致性"+ (1 - (float)referentialConsistencyResult/totalRecordAmount)+"");
+				logger.info("数据引用一致性"+ (float)referentialConsistencyResult/totalRecordAmount+"");
 				break;
 
 			case "数据格式一致性":

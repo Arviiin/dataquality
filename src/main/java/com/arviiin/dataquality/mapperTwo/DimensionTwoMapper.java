@@ -1,47 +1,56 @@
-package com.arviiin.dataquality.mapper;
+package com.arviiin.dataquality.mapperTwo;
 
 import com.arviiin.dataquality.model.DimensionBean;
-import com.arviiin.dataquality.model.DimensionDetailResultBean;
-import com.arviiin.dataquality.model.DimensionResultBean;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-//大部分弃用
-public interface DimensionMapper {
+/**
+ * 最后均是取 满足条件/总的
+ */
+public interface DimensionTwoMapper {
 
-    Integer saveDimensionDetailResultData(@Param("dimensionDetailResultBean") DimensionDetailResultBean dimensionDetailResultBean);
+    Integer getTotalRecordAmount(@Param("tablename") String tablename);
 
-    @Deprecated
-    void saveDimensionResultData(@Param("dimensionResultBean") DimensionResultBean dimensionResultBean);
-    @Deprecated
     Integer getExpectedTotalRecordAmount(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
-    Integer getTotalRecordAmount(@Param("tablename") String tablename);//@Select("SELECT Count(*) FROM ${tablename}") 注意#{}和${}的区别
-    @Deprecated
+
+    //完备性 = 非空的数量 / 所有值的数量
     Integer getDataFileCompletenessResult(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
     Integer getDataValueCompletenessResult(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
+
+    //一致性 = 一致性值的数量 / 所有值的数量
     Integer getReferentialConsistencyResult(@Param("referenceTable") String referenceTable,
                                             @Param("referenceFiled") String referenceFiled,
                                             @Param("beReferenceFiled") String beReferenceFiled,
                                             @Param("beReferenceTable") String beReferenceTable);
-    @Deprecated
+    /**
+     * 考虑到参照引用的可能不是表中的，而是几个固定字段，我们可以填写相应的字段范围
+     * 这时候就不能用上面的方法了。
+     * @param dimensionBean
+     * @return
+     */
     List<String> getReferentialConsistencyResultWithInput(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
     List<String> getFormatConsistencyResult(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
+
+    //依从性 = 符合依从性规则值的数量 / 所有值的数量
     List<String> getDataRecordComplianceResult(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
+
+    //准确性 = 正确值的数量 / 所有值的数量
     Integer getRangeAccuracyResult(@Param("dimensionBean") DimensionBean dimensionBean,
                                    @Param("begin") String begin,
-                                   @Param("end")String end);
-    @Deprecated
+                                   @Param("end") String end);
+
+    //唯一性 = 1 - （重复值的数量 / 所有值的数量）  实际操作中还是直接取不重复的数量
     Integer getRecordUniquenessResult(@Param("dimensionBean") DimensionBean dimensionBean);
-    @Deprecated
+
+    //现实性 = 有效时间内值的数量 / 所有值的数量
     Integer getTimeBasedTimelinessResult(@Param("dimensionBean") DimensionBean dimensionBean,
                                          @Param("beginTime") String beginTime,
-                                         @Param("endTime")String endTime);
+                                         @Param("endTime") String endTime);
 
+
+    /*void saveDimensionResultData(@Param("dimensionResultBean") DimensionResultBean dimensionResultBean);
+
+
+    Integer saveDimensionDetailResultData(@Param("dimensionDetailResultBean") DimensionDetailResultBean dimensionDetailResultBean);*/
 }
