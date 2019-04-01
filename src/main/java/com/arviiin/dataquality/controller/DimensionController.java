@@ -138,3 +138,62 @@ public class DimensionController extends BaseController{
         }
         ]
         */
+
+/*
+[
+        {
+            "columnname": "id",
+            "dimensionname": "数据文件完备性",
+            "rule": "string",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "总金额",
+            "dimensionname": "数据值完备性",
+            "rule": "string",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "支付方式:name",
+            "dimensionname": "数据引用一致性",
+            "rule": "string",
+            "tablename": "pay_detail_info:pay_method"
+        },
+        {
+            "columnname": "联系手机",
+            "dimensionname": "数据格式一致性",
+            "rule": "电话规则",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "收货地址",
+            "dimensionname": "数据记录依从性",
+            "rule": "string",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "宝贝总数量",
+            "dimensionname": "数据范围准确性",
+            "rule": "0:3",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "订单编号",
+            "dimensionname": "数据记录唯一性",
+            "rule": "string",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "订单创建时间",
+            "dimensionname": "基于时间段的时效性",
+            "rule": "2018-04-01:2018-12-19",
+            "tablename": "export_order_list"
+        },
+        {
+            "columnname": "string",
+            "dimensionname": "数据非脆弱性",
+            "rule": "明文",
+            "tablename": "export_order_list"
+        }
+        ]
+        */

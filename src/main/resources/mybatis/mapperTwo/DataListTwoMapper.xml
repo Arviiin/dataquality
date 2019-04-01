@@ -10,7 +10,7 @@
     即便是resultType，返回只写LinkedHashMap也会报错，真坑！！！-->
     <select id="getDataListByTableNameWithMap" resultType="java.util.LinkedHashMap" >
     <![CDATA[
-	    select * from ${tablename}
+	    select * from ${tablename} limit 10;
 	]]>
     </select>
 

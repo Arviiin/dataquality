@@ -112,20 +112,25 @@ public class DimensionServiceImpl implements DimensionService {
         int cnt = 0;
         switch (dimensionBean.getRule()){
             case "邮箱规则":
+                Pattern emailPattern = Pattern.compile("\\w+@(\\w+.)+[a-z]{2,3}"); //简单匹配
                 for (String s : formatConsistencyResult) {
-                    if (CommonUtils.isEmail(s))
+                    if (CommonUtils.isEmail(s,emailPattern))
                         cnt++;
                 }
                 break;
             case "邮编规则":
+                String reg = "[1-9]\\d{5}";
+                Pattern postCodePattern = Pattern.compile(reg);
                 for (String s : formatConsistencyResult) {
-                    if (CommonUtils.isPostCode(s))
+                    if (CommonUtils.isPostCode(s,postCodePattern))
                         cnt++;
                 }
                 break;
             case "电话规则":
+                String regex = "(\\+\\d+)?1[3458]\\d{9}$";
+                Pattern pattern = Pattern.compile(regex);
                 for (String s : formatConsistencyResult) {
-                    if (CommonUtils.isMobile(s))
+                    if (CommonUtils.isMobile(s,pattern))
                         cnt++;
                 }
                 break;
@@ -140,10 +145,9 @@ public class DimensionServiceImpl implements DimensionService {
         List<String> dataRecordComplianceResult = dimensionTwoMapper.getDataRecordComplianceResult(dimensionBean);
         //家庭住址
         String regex = ".*(省|自治区|上海|北京|天津|重庆).*(市|自治州).*(区|县|市|旗)(.*(镇|乡|街道))?";
-        Pattern p = Pattern.compile(regex);//如果放在方法里，频繁的new对象很可怕！占用太多资源，甚至OOM
+        Pattern p = Pattern.compile(regex);//如果放在方法里，频繁的创建对象很可怕！占用太多资源
         int cnt = 0;
         for (String s : dataRecordComplianceResult) {
-            //if (CommonUtils.isAddress(s))
             if (CommonUtils.isAddress(s,p))
                 cnt++;
         }
@@ -208,6 +212,7 @@ public class DimensionServiceImpl implements DimensionService {
     public void saveDimensionResultData(DimensionResultBean dimensionResultBean) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         dimensionResultBean.setCreatetime(timestamp);
+        dimensionResultBean.setUpdatetime(timestamp);
         dimensionOneMapper.saveDimensionResultData(dimensionResultBean);
     }
 
@@ -215,8 +220,8 @@ public class DimensionServiceImpl implements DimensionService {
     public void saveDimensionResultDataToRedis(DimensionResultBean dimensionResultBean) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         dimensionResultBean.setCreatetime(timestamp);
+        dimensionResultBean.setUpdatetime(timestamp);
         redisMapper.saveDimensionResultDataToRedis(dimensionResultBean);
-
     }
 
     @Override

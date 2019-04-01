@@ -18,7 +18,7 @@ import java.util.Date;
  */
 
 @Aspect     // 表示一个切面bean
-@Component  // bean容器的组件注解。虽然放在contrller包里，但它不是控制器。如果注入service,但我们又没有放在service包里
+@Component  // bean容器的组件注解。
 //@Order(3)   // 有多个日志时，ORDER可以定义切面的执行顺序（数字越大，前置越后执行，后置越前执行）
 public class LogAspect {
 
@@ -32,7 +32,7 @@ public class LogAspect {
 	  5、第5个* 方法名，com.*.*.controller包下所有类所有方法
 	  6、(..) 表示方法参数，..表示任何参数
 	  */
-    @Pointcut("execution(* com.arviiin.dataquality.controller.DimensionController.*(..))")
+    @Pointcut("execution(* com.arviiin.dataquality.controller.Dimension*Controller.*(..))")
     public void webLog() {
     }
 

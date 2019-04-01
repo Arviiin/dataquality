@@ -21,4 +21,8 @@ public interface DimensionResultService {
     DimensionScore getDimensionScore();
 
     Map<String,String> formatDimensionScore(DimensionScore dimensionScore);
+
+    String getDimensionResultMinRatio(DimensionDetailResultBean dimensionDetailResultBean);
+
+    String getDimensionEvaluationLevel(DimensionScore dimensionScore);
 }

@@ -1,17 +1,29 @@
 package com.arviiin.dataquality.controller;
 
-//@RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
+import com.arviiin.dataquality.model.DimensionBean;
+import com.arviiin.dataquality.model.DimensionResultBean;
+import com.arviiin.dataquality.model.JsonResult;
+import com.arviiin.dataquality.service.DimensionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
 public class DimensionSingleThreadController extends BaseController{
 
-    /*@Autowired
-    private DimensionService dimensionService;*/
+    @Autowired
+    private DimensionService dimensionService;
 
     /**
      * 接收前端传来的指标维度相关的数据
      * @param dimensionBeanList
      * @return
      */
-    /*@PostMapping(value = "data/dimension")
+    @PostMapping(value = "data/dimensionSingleCompute")
     public ResponseEntity<JsonResult> getDimensionIndexResult (@RequestBody List<DimensionBean> dimensionBeanList){
         JsonResult r = new JsonResult();
         DimensionResultBean dimensionResultBean = new DimensionResultBean();
@@ -24,76 +36,71 @@ public class DimensionSingleThreadController extends BaseController{
                         dimensionResultBean.setExpectedTotalRecordAmount(expectedTotalRecordAmount);
                         int dataFileCompletenessResult = dimensionService.getDataFileCompletenessResult(dimensionBean);
                         dimensionResultBean.setDataFileCompleteness(dataFileCompletenessResult);
-//                        logger.info(expectedTotalRecordAmount+"");
-//                        logger.info(dataFileCompletenessResult+"");
+                        logger.info(expectedTotalRecordAmount+"");
+                        logger.info(dataFileCompletenessResult+"");
                         logger.info( "数据文件完备性"+(float)dataFileCompletenessResult/expectedTotalRecordAmount+"");
                         break;
                     case "数据值完备性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int dataValueCompletenessResult = dimensionService.getDataValueCompletenessResult(dimensionBean);
                         dimensionResultBean.setDataValueCompleteness(dataValueCompletenessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(dataValueCompletenessResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(dataValueCompletenessResult+"");
                         logger.info("数据值完备性"+ (float)dataValueCompletenessResult/totalRecordAmount+"");
                         break;
                     case "数据引用一致性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int referentialConsistencyResult = dimensionService.getReferentialConsistencyResult(dimensionBean);
                         dimensionResultBean.setReferentialConsistency(referentialConsistencyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(referentialConsistencyResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(referentialConsistencyResult+"");
                         logger.info("数据引用一致性"+ (float)referentialConsistencyResult/totalRecordAmount+"");
                         break;
 
                     case "数据格式一致性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int formatConsistencyResult = dimensionService.getFormatConsistencyResult(dimensionBean);
                         dimensionResultBean.setFormatConsistency(formatConsistencyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(formatConsistencyResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(formatConsistencyResult+"");
                         logger.info( "数据格式一致性"+(float)formatConsistencyResult/totalRecordAmount+"");
                         break;
                     case "数据记录依从性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int dataRecordComplianceResult = dimensionService.getDataRecordComplianceResult(dimensionBean);
                         dimensionResultBean.setDataRecordCompliance(dataRecordComplianceResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(dataRecordComplianceResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(dataRecordComplianceResult+"");
                         logger.info( "数据记录依从性"+(float)dataRecordComplianceResult/totalRecordAmount+"");
                         break;
                     case "数据范围准确性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int rangeAccuracyResult = dimensionService.getRangeAccuracyResult(dimensionBean);
                         dimensionResultBean.setRangeAccuracy(rangeAccuracyResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(rangeAccuracyResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(rangeAccuracyResult+"");
                         logger.info("数据范围准确性"+ (float)rangeAccuracyResult/totalRecordAmount+"");
                         break;
                     case "数据记录唯一性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int recordUniquenessResult = dimensionService.getRecordUniquenessResult(dimensionBean);
                         dimensionResultBean.setRecordUniqueness(recordUniquenessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(recordUniquenessResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(recordUniquenessResult+"");
                         logger.info( "数据记录唯一性"+(float)recordUniquenessResult/totalRecordAmount+"");
                         break;
                     case "基于时间段的时效性":
-                        if (totalRecordAmount == -1)
-                            totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
+                        totalRecordAmount = dimensionService.getTotalRecordAmount(dimensionBean);
                         int timeBasedTimelinessResult = dimensionService.getTimeBasedTimelinessResult(dimensionBean);
                         dimensionResultBean.setTimeBasedTimeliness(timeBasedTimelinessResult);
-//                        logger.info(totalRecordAmount+"");
-//                        logger.info(timeBasedTimelinessResult+"");
+                        logger.info(totalRecordAmount+"");
+                        logger.info(timeBasedTimelinessResult+"");
                         logger.info("基于时间段的时效性"+ (float)timeBasedTimelinessResult/totalRecordAmount+"");
                         break;
                     case "数据非脆弱性":
+                        //为了展示图表的便捷，我们把保密性/100乘以总数
                         int dataNonVulnerabilityResult  = dimensionService.getDataNonVulnerabilityResult(dimensionBean);
+                        //dimensionResultBean.setDataNonVulnerability((dataNonVulnerabilityResult*totalRecordAmount/100));
                         dimensionResultBean.setDataNonVulnerability(dataNonVulnerabilityResult);
                         logger.info("数据非脆弱性"+dataNonVulnerabilityResult+"");
                         break;
@@ -115,7 +122,7 @@ public class DimensionSingleThreadController extends BaseController{
             e.printStackTrace();
         }
         return ResponseEntity.ok(r);
-    }*/
+    }
 
 }
 /*

@@ -7,22 +7,10 @@ import java.util.regex.Pattern;
 public class CommonUtils {
 
     /*public static boolean isEmail(String string) {
-        if (string == null)
-            return false;
         String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-        Pattern p;
-        Matcher m;
-        p = Pattern.compile(regEx1);
-        m = p.matcher(string);
-        if (m.matches())
-            return true;
-        else
-            return false;
     }*/
-
     /**
      * 检测邮箱地址是否合法
-     *
      * @param email
      * @return true合法 false不合法
      */
@@ -34,7 +22,7 @@ public class CommonUtils {
             Matcher m = p.matcher(input);
             return m.matches();
         }*/
-        //"ddd".matches()//同样适用string的matches也会重复调用
+        //"ddd".matches()//上述同样适用string的matches也会重复调用
        /* public boolean matches(String regex) {
             return Pattern.matches(regex, this);
         }*/
@@ -43,11 +31,27 @@ public class CommonUtils {
         Matcher m = p.matcher(email);
         return m.matches();
     }
-
+    public static boolean isEmail(String email,Pattern p) {
+        if (null == email || "".equals(email)) return false;
+//        Pattern p = Pattern.compile("\\w+@(\\w+.)+[a-z]{2,3}"); //简单匹配
+//        Pattern p = Pattern.compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");//复杂匹配
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+    /**
+     * 判断邮编是否合法
+     * @param postCode
+     * @return
+     */
     public static boolean isPostCode(String postCode){
         if (null == postCode || "".equals(postCode)) return false;
         String reg = "[1-9]\\d{5}";
         Pattern p = Pattern.compile(reg);
+        Matcher m=p.matcher(postCode);
+        return m.matches();
+    }
+    public static boolean isPostCode(String postCode,Pattern p){
+        if (null == postCode || "".equals(postCode)) return false;
         Matcher m=p.matcher(postCode);
         return m.matches();
     }
@@ -63,8 +67,21 @@ public class CommonUtils {
      * @return 验证成功返回true，验证失败返回false
      */
     public static boolean isMobile(String mobile){
+        if (null == mobile || "".equals(mobile)) return false;
         String regex = "(\\+\\d+)?1[3458]\\d{9}$";
         return Pattern.matches(regex, mobile);
+    }
+    /*public static boolean matches(String regex, CharSequence input) {
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(input);
+            return m.matches();
+        }*/
+    //慎用Pattern类的matches方法也即是上面这种调用方式，每次编译返回一个新的正则表达式，耗费资源
+    //如果偶尔使用一次，可以直接使用，这里我们需要大量使用，因而在调用方法处编译，并把编译后的Pattern对象传进来
+    public static boolean isMobile(String mobile,Pattern pattern){
+        if (null == mobile || "".equals(mobile)) return false;
+            Matcher m = pattern.matcher(mobile);
+            return m.matches();
     }
     /**
      * 区号+座机号码+分机号码
@@ -76,12 +93,6 @@ public class CommonUtils {
                 "(?:(86-?)?(0[0-9]{2,3}\\-?)?([2-9][0-9]{6,7})+(\\-[0-9]{1,4})?)";
         return Pattern.matches(reg, fixedPhone);
     }
-    /*String regEx="[^省]+省[^市]+市+[^区]+区";  
-    Pattern p = Pattern.compile(regEx);   
-    Matcher m = p.matcher(city);
-    while(m.find()){
-        System.out.println(m.group());
-    }*/
 
     /**
      * 判断地址是否包含关键的省市区
@@ -98,8 +109,8 @@ public class CommonUtils {
         String regex = ".*(省|自治区|上海|北京|天津|重庆).*(市|自治州).*(区|县|市|旗)(.*(镇|乡|街道))?";
         Pattern p = Pattern.compile(regex);
         Matcher m=p.matcher(address);
-        return m.find();
         //return m.matches();
+        return m.find();
     }
 
     /**
@@ -111,8 +122,8 @@ public class CommonUtils {
     public static boolean isAddress(String address,Pattern p){
         if (null == address || "".equals(address)) return false;
         Matcher m = p.matcher(address);
+//        return m.matches();//这个完全配置，太苛刻，
         return m.find();
-        //return m.matches();
     }
 
     public static String getUuid(){

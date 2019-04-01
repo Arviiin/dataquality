@@ -123,7 +123,13 @@ public class DimensionMultiThreadCallableImpl implements Callable<Map<String,Obj
 				logger.info("基于时间段的时效性"+ (float)timeBasedTimelinessResult/totalRecordAmountOfTimeBasedTimeliness+"");
 				break;
 			case "数据非脆弱性":
+				//
+				/*int	totalRecordAmountOfDataNonVulnerability = -1;
+				if (dimensionBean.getTablename() != null && !"".equals(dimensionBean.getTablename())){
+					totalRecordAmountOfDataNonVulnerability = dimensionService.getTotalRecordAmount(dimensionBean);
+				}*/
 				int dataNonVulnerabilityResult  = dimensionService.getDataNonVulnerabilityResult(dimensionBean);
+				//resultMap.put("dataNonVulnerabilityResult",dataNonVulnerabilityResult*totalRecordAmountOfDataNonVulnerability/100);
 				resultMap.put("dataNonVulnerabilityResult",dataNonVulnerabilityResult);
 				//dimensionResultBean.setDataNonVulnerability(dataNonVulnerabilityResult);
 				logger.info("数据非脆弱性"+dataNonVulnerabilityResult+"");

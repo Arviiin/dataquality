@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DimensionResultServiceImpl implements DimensionResultService {
@@ -140,6 +139,86 @@ public class DimensionResultServiceImpl implements DimensionResultService {
         dataMap.put("totalDataQualityScore",df.format(dimensionScore.getTotalDataQualityScore()));
 
         return dataMap;
+    }
+
+    @Override
+    public String getDimensionResultMinRatio(DimensionDetailResultBean dimensionDetailResultBean) {
+
+        Map<String, Float> hashMap = new HashMap<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultBean.getDataFileCompletenessResult() / dimensionDetailResultBean.getExpectedTotalRecordAmount();
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultBean.getDataValueCompletenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataValueCompleteness();
+        hashMap.put("完备性",(dataFileCompletenessResult+dataValueCompletenessResult)/2);
+
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultBean.getFormatConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfFormatConsistency();
+        hashMap.put("一致性",(referentialConsistencyResult+formatConsistencyResult)/2);
+
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultBean.getDataRecordComplianceResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataRecordCompliance();
+        hashMap.put("依从性",dataRecordComplianceResult);
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultBean.getRangeAccuracyResult() / dimensionDetailResultBean.getTotalRecordAmountOfRangeAccuracy();
+        hashMap.put("准确性",rangeAccuracyResult);
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultBean.getRecordUniquenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfRecordUniqueness();
+        hashMap.put("唯一性",recordUniquenessResult);
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultBean.getTimeBasedTimelinessResult() / dimensionDetailResultBean.getTotalRecordAmountOfTimeBasedTimeliness();
+        hashMap.put("现实性",timeBasedTimelinessResult);
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultBean.getDataNonVulnerabilityResult()/100;
+        hashMap.put("保密性",dataNonVulnerabilityResult);
+
+
+        //1、按顺序保存map中的元素，使用LinkedList类型
+        List<Map.Entry<String, Float>> keyList = new LinkedList<>(hashMap.entrySet());
+        //2、按照自定义的规则排序  从小到大
+        Collections.sort(keyList, new Comparator<Map.Entry<String, Float>>() {
+            @Override
+            public int compare(Map.Entry<String, Float> o1, Map.Entry<String, Float> o2) {
+                if(o2.getValue().compareTo(o1.getValue())>0){
+                    return -1;
+                }else if(o2.getValue().compareTo(o1.getValue())<0){
+                    return 1;
+                }  else {
+                    return 0;
+                }
+            }
+
+        });
+        //3、将LinkedList按照排序好的结果，取第一个最小的
+        Map.Entry<String, Float> stringFloatEntry = keyList.get(0);
+        DecimalFormat df = new DecimalFormat("0.00%");//定义小数转百分数
+        return stringFloatEntry.getKey()+"，其值为"+df.format(stringFloatEntry.getValue());
+    }
+
+    /**
+    * @Author: jlzhuang
+    * @Date:
+    * @Description: 评价等级分为优秀、良好、合格、不合格四种   优秀>=90    良好： 89-75   合格74-60   不合格 <=59
+    * @Version 1.0.0
+    */
+    @Override
+    public String getDimensionEvaluationLevel(DimensionScore dimensionScore) {
+        Double totalDataQualityScore = dimensionScore.getTotalDataQualityScore();
+        if (totalDataQualityScore >= 90.000d){
+            return "优秀";
+        }else if(totalDataQualityScore >= 75.000d && totalDataQualityScore <= 89.000d){
+            return "良好";
+        }else if (totalDataQualityScore >= 60.000d && totalDataQualityScore <= 74.000d){
+            return "合格";
+        }
+        return "不合格";
     }
 
 }

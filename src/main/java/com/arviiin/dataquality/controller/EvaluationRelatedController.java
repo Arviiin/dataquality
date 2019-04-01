@@ -2,6 +2,7 @@ package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
+import com.arviiin.dataquality.model.DimensionScore;
 import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DimensionResultService;
@@ -82,14 +83,23 @@ public class EvaluationRelatedController extends BaseController{
             //2019-03-01 10:42:49.362
             String substring = updatetime.toString().replaceAll("-", "").replace(" ","").replace(".","").replaceAll(":","");//20190301
             dataMap.put("evaluationNumber","SJZLPJ"+substring);
+
             //拿到良率
             Map<String,Object>  dimensionResultRatioBean = dimensionResultService.getDimensionResultRatio(dimensionDetailResultBean);
             dataMap.put("dimensionResultRatioBean",dimensionResultRatioBean);
 
             //拿到分值并把把分值格式化为保留后两位小数的字符串
-            Map<String,String> dimensionScore = dimensionResultService.formatDimensionScore(dimensionResultService.getDimensionScore());
+            DimensionScore dimensionScoreResult = dimensionResultService.getDimensionScore();
+            Map<String,String> dimensionScore = dimensionResultService.formatDimensionScore(dimensionScoreResult);
             dataMap.put("dimensionScore",dimensionScore);
 
+            //给出建议
+            //拿到评估等级
+            String evaluationLevel = dimensionResultService.getDimensionEvaluationLevel(dimensionScoreResult);
+            //拿到最差的质量维度及其比值
+            String minRatio = dimensionResultService.getDimensionResultMinRatio(dimensionDetailResultBean);
+            dataMap.put("suggestion","数据质量评价结果为："+evaluationLevel+"。良率中最差的质量维度为："+minRatio+
+                    "。建议仔细分析此质量维度差的原因。");
             r.setResult(dataMap);
             r.setStatus(OK);
         } catch (Exception e) {

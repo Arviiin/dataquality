@@ -45,6 +45,29 @@ public class DimensionResultBean implements Serializable {
 
     private Timestamp createtime;
 
+    private Timestamp updatetime;
+
+
+    @Override
+    public String toString() {
+        return "DimensionResultBean{" +
+                "id=" + id +
+                ", totalRecordAmount=" + totalRecordAmount +
+                ", expectedTotalRecordAmount=" + expectedTotalRecordAmount +
+                ", dataFileCompleteness=" + dataFileCompleteness +
+                ", dataValueCompleteness=" + dataValueCompleteness +
+                ", referentialConsistency=" + referentialConsistency +
+                ", formatConsistency=" + formatConsistency +
+                ", dataRecordCompliance=" + dataRecordCompliance +
+                ", rangeAccuracy=" + rangeAccuracy +
+                ", recordUniqueness=" + recordUniqueness +
+                ", timeBasedTimeliness=" + timeBasedTimeliness +
+                ", dataNonVulnerability=" + dataNonVulnerability +
+                ", createtime=" + createtime +
+                ", updatetime=" + updatetime +
+                '}';
+    }
+
     public Integer getId() {
         return id;
     }
@@ -149,22 +172,11 @@ public class DimensionResultBean implements Serializable {
         this.createtime = createtime;
     }
 
-    @Override
-    public String toString() {
-        return "DimensionResultBean{" +
-                "id=" + id +
-                ", totalRecordAmount=" + totalRecordAmount +
-                ", expectedTotalRecordAmount=" + expectedTotalRecordAmount +
-                ", dataFileCompleteness=" + dataFileCompleteness +
-                ", dataValueCompleteness=" + dataValueCompleteness +
-                ", referentialConsistency=" + referentialConsistency +
-                ", formatConsistency=" + formatConsistency +
-                ", dataRecordCompliance=" + dataRecordCompliance +
-                ", rangeAccuracy=" + rangeAccuracy +
-                ", recordUniqueness=" + recordUniqueness +
-                ", timeBasedTimeliness=" + timeBasedTimeliness +
-                ", dataNonVulnerability=" + dataNonVulnerability +
-                ", createtime=" + createtime +
-                '}';
+    public Timestamp getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Timestamp updatetime) {
+        this.updatetime = updatetime;
     }
 }
