@@ -1,23 +1,36 @@
-package com.arviiin.dataquality.controller;
+package com.arviiin.dataquality.service.impl;
 
 import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionScore;
-import com.arviiin.dataquality.model.JsonResult;
 import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DimensionResultService;
+import com.arviiin.dataquality.service.EmailService;
 import com.arviiin.dataquality.service.EvaluationRelatedService;
 import com.arviiin.dataquality.service.WeightService;
+import com.arviiin.dataquality.util.EmailRunnable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
-@RestController//@RestController注解相当于@ResponseBody ＋ @Controller合在一起的作用。
-public class EvaluationRelatedController extends BaseController{
+
+@Service
+public class EmailServiceImpl implements EmailService {
+
+    @Autowired
+    ExecutorService executorService;
+    @Autowired
+    TemplateEngine templateEngine;
+    @Autowired
+    JavaMailSender javaMailSender;
+
     @Autowired
     private EvaluationRelatedService evaluationRelatedService;
 
@@ -30,47 +43,19 @@ public class EvaluationRelatedController extends BaseController{
     @Autowired
     private RedisMapper redisMapper;
 
-    @RequestMapping(value = "/data/evaluation_init", method = RequestMethod.POST)//讲道理更新应该用put,但前台用put过于麻烦，就用post了
-    public ResponseEntity<JsonResult> saveEvaluationInitData (@RequestParam("username") String username,
-                                                              @RequestParam(name = "email",required = false,defaultValue = "931639826@qq.com") String email,
-                                                      @RequestParam("evaluation_name") String evaluationName,
-                                                      @RequestParam("evaluation_remark") String evaluationRemark){
-        JsonResult r = new JsonResult();//不管是地址栏里的参数，还是表单里面的参数都可以用@RequestParam取得
-        try {
-            int ret = -1;
-            if ("".equals(email) || email == null){
-                ret = evaluationRelatedService.saveEvaluationInitData(username,evaluationName,evaluationRemark);
-            }else {
-                ret = evaluationRelatedService.saveEvaluationInitData(username,email,evaluationName,evaluationRemark);
-            }
+    @Value("${spring.mail.username}")
+    private String from;
 
-            //ret 1 为正常
-            if (ret != 1) {
-                r.setResult(ret);
-                r.setStatus(FAIL_STRING);
-            } else if (ret == 1){
-                r.setResult(ret);
-                r.setStatus(OK);
-            }
-        } catch (Exception e) {
-            r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus(ERROR_STRING);
-            e.printStackTrace();
-        }
-        return ResponseEntity.ok(r);
-    }
-
-    @PostMapping("/result/report")
-    public ResponseEntity<JsonResult> getDataForEvaluationReport (@RequestParam("username") String username){
-        JsonResult r = new JsonResult();
+    @Override
+    public String sendEmail() {
         try {
             //创建map用于装备数据
             Map<String, Object> dataMap = new HashMap<>();
             //获取数据库中的初始设置里的数据  这里注意若用户之前没初始化设置，则会报错。
-            Map<String, Object> evaluationInitMap = evaluationRelatedService.getEvaluationInitData(username);
+            Map<String, Object> evaluationInitMap = evaluationRelatedService.getLatestEvaluationInitData();
             dataMap.put("evaluationName",evaluationInitMap.get("evaluation_name"));
             dataMap.put("evaluationRemark",evaluationInitMap.get("evaluation_remark"));
-            dataMap.put("evaluationRemarkUsername",username);
+            dataMap.put("evaluationRemarkUsername",evaluationInitMap.get("evaluation_username"));
 
             //权重放进去
             WeightBean weightResultBean = weightService.getWeightResult();//取出权重
@@ -99,7 +84,6 @@ public class EvaluationRelatedController extends BaseController{
             Map<String,Object>  dimensionResultRatioScoreBean = dimensionResultService.getDimensionResultRatioScore(dimensionDetailResultBean);
             dataMap.put("dimensionResultRatioBean",dimensionResultRatioScoreBean);//注意前面是dimensionResultRatioBean没有score
 
-
             //拿到分值并把把分值格式化为保留后两位小数的字符串
             DimensionScore dimensionScoreResult = dimensionResultService.getDimensionScore();
             Map<String,String> dimensionScore = dimensionResultService.formatDimensionScore(dimensionScoreResult);
@@ -112,16 +96,10 @@ public class EvaluationRelatedController extends BaseController{
             String minRatio = dimensionResultService.getDimensionResultMinRatio(dimensionDetailResultBean);
             dataMap.put("suggestion","数据质量评价结果为："+evaluationLevel+"。良率中最差的质量维度为："+minRatio+
                     "。建议仔细分析此质量维度差的原因。");
-            r.setResult(dataMap);
-            r.setStatus(OK);
-
+            executorService.execute(new EmailRunnable(from,dataMap, javaMailSender, templateEngine));
         } catch (Exception e) {
-            //r.setResult(e.getClass().getName() + ":" + e.getMessage());
-            r.setStatus(ERROR_STRING);
-            r.setResult("评估人名为空请进行初始化设置");
             e.printStackTrace();
-            logger.error("评估人名为空请进行初始化设置");
         }
-        return ResponseEntity.ok(r);
+        return "ok";
     }
 }

@@ -15,4 +15,7 @@ public interface EvaluationRelatedService {
 
     Map<String,Object> getEvaluationInitData(String username);
 
+    Map<String,Object> getLatestEvaluationInitData();
+
+    int saveEvaluationInitData(String username, String email, String evaluationName, String evaluationRemark);
 }

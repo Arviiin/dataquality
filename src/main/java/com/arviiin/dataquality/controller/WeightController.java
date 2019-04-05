@@ -64,6 +64,7 @@ public class WeightController extends BaseController{
             //System.out.println(defaultWeightResult);
             System.out.println(dimensionDetailResultBean.toString());
 
+
             r.setStatus(OK);
         } catch (Exception e) {
             r.setResult(e.getClass().getName() + ":" + e.getMessage());

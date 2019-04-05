@@ -12,6 +12,13 @@
        		(#{username}, #{evaluationName}, #{evaluationRemark},#{createtime},#{updatetime})
     </insert>
 
+    <insert id="save4ArgsEvaluationInitData" >
+        INSERT INTO
+            evaluation
+            (evaluation_username,email,evaluation_name,evaluation_remark,createtime,updatetime)
+        VALUES
+            (#{username},#{email}, #{evaluationName}, #{evaluationRemark},#{createtime},#{updatetime})
+    </insert>
     <!--把resultType从无序的Map改成有序的LinkedHashMap，可以直观感受到向上转型的好处，前面由于是用Map接收结果的，代码不用改
     发现一个很搞笑的东西，把resultType改成resultMap会报找不到LinkedHashMap  因为resultMap是需要自己定义的，用来解决字段名和数据库名不一致的情况
     IncompleteElementException: Could not find result map java.util.LinkedHashMap
@@ -23,9 +30,11 @@
             from evaluation
         )
     </select>
-    <!--<insert id="reg" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user set username=#{username},password=#{password},
-            company=#{company},email=#{email},telephone=#{telephone},enabled=#{enabled},
-            createtime=#{createtime},updatetime=#{updatetime}
-    </insert>-->
+
+
+    <select id="getLatestEvaluationInitData" resultType="java.util.HashMap">
+        select evaluation_name,evaluation_remark,evaluation_username
+        from evaluation ORDER BY id desc limit 1
+    </select>
+
 </mapper>

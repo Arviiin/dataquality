@@ -18,6 +18,8 @@ public interface DimensionResultService {
 
     Map<String,Object> getDimensionResultRatio(DimensionDetailResultBean dimensionDetailResultBean);
 
+    Map<String,Object> getDimensionResultRatioScore(DimensionDetailResultBean dimensionDetailResultBean);
+
     DimensionScore getDimensionScore();
 
     Map<String,String> formatDimensionScore(DimensionScore dimensionScore);
@@ -25,4 +27,6 @@ public interface DimensionResultService {
     String getDimensionResultMinRatio(DimensionDetailResultBean dimensionDetailResultBean);
 
     String getDimensionEvaluationLevel(DimensionScore dimensionScore);
+
+
 }

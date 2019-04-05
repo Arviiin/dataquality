@@ -54,7 +54,7 @@ public class DimensionController extends BaseController{
             List<Future<Map<String,Object>>> futureResults = exec.invokeAll(tasks);//有返回值的多线程，且同时提交多个线程
             //wait until all sub-thread are finished
             endSigle.await();
-            //we want to check whether main thread is waiting for sub-thread
+            //to check whether main thread is waiting for sub-thread
             System.out.println("this is main threads");
 
             Map<String, Object> resultMap = new HashMap<>();

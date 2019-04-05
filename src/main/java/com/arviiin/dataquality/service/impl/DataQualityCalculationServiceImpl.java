@@ -6,6 +6,7 @@ import com.arviiin.dataquality.model.DimensionScore;
 import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DataQualityCalculationService;
 import com.arviiin.dataquality.service.DimensionResultService;
+import com.arviiin.dataquality.service.EmailService;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,9 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
 
     @Autowired
     private DimensionResultService dimensionResultService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Double dimensionWeightCalculation(DimensionResultBean dimensionResultData, WeightBean weightBean) {
@@ -158,6 +162,8 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
                 timeBasedTimelinessResult * weightBean.getTimeliness() +
                 dataNonVulnerabilityResult * weightBean.getVulnerability();*/
 
+        //开启新线程发送邮件  考虑使用队列完成数据库存储和邮件发送
+        emailService.sendEmail();
         return result;
     }
 

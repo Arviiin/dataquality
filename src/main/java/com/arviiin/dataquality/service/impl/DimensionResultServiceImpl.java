@@ -97,6 +97,50 @@ public class DimensionResultServiceImpl implements DimensionResultService {
     }
 
     /**
+     * 计算每个指标的初始比值得分,保留两位小数，除了权重3位小数，其他最多保留两位小数
+     * @param dimensionDetailResultBean
+     * @return
+     */
+    @Override
+    public Map<String, Object> getDimensionResultRatioScore(DimensionDetailResultBean dimensionDetailResultBean) {
+        Map<String, Object> hashMap = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("0.00");//定义小数保留两位不足用零填充
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultBean.getDataFileCompletenessResult() / dimensionDetailResultBean.getExpectedTotalRecordAmount();
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultBean.getDataValueCompletenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataValueCompleteness();
+        hashMap.put("Completeness",df.format((dataFileCompletenessResult+dataValueCompletenessResult)/2*100));
+
+        // "数据引用一致性":
+        float referentialConsistencyResult = (float)dimensionDetailResultBean.getReferentialConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfReferentialConsistency();
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultBean.getFormatConsistencyResult() / dimensionDetailResultBean.getTotalRecordAmountOfFormatConsistency();
+        hashMap.put("Consistency",df.format((referentialConsistencyResult+formatConsistencyResult)/2*100));
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultBean.getDataRecordComplianceResult() / dimensionDetailResultBean.getTotalRecordAmountOfDataRecordCompliance();
+        hashMap.put("Compliance",df.format(dataRecordComplianceResult*100));
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultBean.getRangeAccuracyResult() / dimensionDetailResultBean.getTotalRecordAmountOfRangeAccuracy();
+        hashMap.put("Accuracy",df.format(rangeAccuracyResult*100));
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultBean.getRecordUniquenessResult() / dimensionDetailResultBean.getTotalRecordAmountOfRecordUniqueness();
+        hashMap.put("Uniqueness",df.format(recordUniquenessResult*100));
+
+        // "基于时间段的时效性"现实性:
+        float timeBasedTimelinessResult = (float)dimensionDetailResultBean.getTimeBasedTimelinessResult() / dimensionDetailResultBean.getTotalRecordAmountOfTimeBasedTimeliness();
+        hashMap.put("Timeliness",df.format(timeBasedTimelinessResult*100));
+
+        // "数据非脆弱性"保密性:
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultBean.getDataNonVulnerabilityResult()/100;
+        hashMap.put("Confidentiality",df.format(dataNonVulnerabilityResult*100));
+
+        return hashMap;
+    }
+
+    /**
     * @Author: jlzhuang
     * @Date:
     * @Description: 
@@ -141,6 +185,11 @@ public class DimensionResultServiceImpl implements DimensionResultService {
         return dataMap;
     }
 
+    /**
+     * 拿到所有指标中合格率最小的
+     * @param dimensionDetailResultBean
+     * @return
+     */
     @Override
     public String getDimensionResultMinRatio(DimensionDetailResultBean dimensionDetailResultBean) {
 

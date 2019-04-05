@@ -35,7 +35,7 @@ public class VisualizController extends BaseController{
         //拿到七个大分类
         List<String> categories = visualizService.getCategories();
         //先去redis里面找七个纵坐标，如果没有再请求数据库
-        List<Float> dataStatistics = visualizService.getSevenDataStatisticsFromRedis();
+        List<String> dataStatistics = visualizService.getSevenDataStatisticsFromRedis();
         if (dataStatistics == null){
             //请求数据库
             //dataStatistics = visualizService.getDataStatistics();//这个拿的不是详细的

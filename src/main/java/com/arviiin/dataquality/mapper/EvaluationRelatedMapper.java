@@ -24,4 +24,12 @@ public interface EvaluationRelatedMapper {
     // 当接口参数大于一个的时候，mybatis的参数集就是上边说的默认值[0, 1, param1, param2]，如果你不用默认值，就需要加上@Param注解起别名。一旦加了注解
     Map<String,Object> getEvaluationInitData(String username);
 
+    Map<String,Object> getLatestEvaluationInitData();
+
+    int save4ArgsEvaluationInitData(@Param("username") String username,
+                                    @Param("email") String email,
+                                    @Param("evaluationName") String evaluationName,
+                                    @Param("evaluationRemark") String evaluationRemark,
+                                    @Param("createtime") Timestamp createtime,
+                                    @Param("updatetime") Timestamp updatetime);
 }

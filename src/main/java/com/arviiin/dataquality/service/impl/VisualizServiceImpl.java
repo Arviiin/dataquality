@@ -9,6 +9,7 @@ import com.arviiin.dataquality.service.VisualizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +47,14 @@ public class VisualizServiceImpl implements VisualizService {
         categories.add("依从性");
         categories.add("准确性");
         categories.add("唯一性");
-        categories.add("时效性");
+        //categories.add("时效性");
+        categories.add("现实性");
         categories.add("保密性");
         return categories;
     }
 
     /**
-     * 从Mysql中获取表的纵坐标的比值，已启用，因为使用的是DimensionResultBean
+     * 从Mysql中获取表的纵坐标的比值，已弃用，因为使用的是DimensionResultBean
      * @return  dimensionResultData
      */
     @Deprecated
@@ -148,50 +150,57 @@ public class VisualizServiceImpl implements VisualizService {
      * @Version 1.0.0
      */
     @Override
-    public List<Float> getSevenDetailDataStatistics() {
+    public List<String> getSevenDetailDataStatistics() {
         DimensionDetailResultBean dimensionDetailResultData = dimensionResultMapper.getDimensionDetailResultData();
+        //格式化保留两位小数
+        return formatSevenDetailDataStatistics(dimensionDetailResultData);
+    }
+    //格式化保留两位小数，再转成float，未能解决显示时，丢失0的问题
+    /*public List<Float> getSevenDetailDataStatistics() {
+        DimensionDetailResultBean dimensionDetailResultData = dimensionResultMapper.getDimensionDetailResultData();
+        DecimalFormat df = new DecimalFormat("0.00");//定义小数保留两位不足用零填充
         List<Float> dataStatistics = new ArrayList<>();
         // "数据文件完备性":
         float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
         // "数据值完备性":
         float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
         //完备性
-        dataStatistics.add((dataFileCompletenessResult+dataValueCompletenessResult)/2f);
+        dataStatistics.add(Float.parseFloat(df.format((dataFileCompletenessResult+dataValueCompletenessResult)/2f)));
 
         // "数据引用一致性":
         float referentialConsistencyResult =  (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
         // "数据格式一致性":
         float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
         //一致性
-        dataStatistics.add((referentialConsistencyResult+formatConsistencyResult)/2f);
+        dataStatistics.add(Float.parseFloat(df.format((referentialConsistencyResult+formatConsistencyResult)/2f)));
 
         // "数据记录依从性":
         float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
-        dataStatistics.add(dataRecordComplianceResult);
+        dataStatistics.add(Float.parseFloat(df.format((dataRecordComplianceResult))));
 
         // "数据范围准确性":
         float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
-        dataStatistics.add(rangeAccuracyResult);
+        dataStatistics.add(Float.parseFloat(df.format((rangeAccuracyResult))));
 
         // "数据记录唯一性":
         float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
-        dataStatistics.add(recordUniquenessResult);
+        dataStatistics.add(Float.parseFloat(df.format((recordUniquenessResult))));
 
         // "基于时间段的时效性":
         float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
-        dataStatistics.add(timeBasedTimelinessResult);
+        dataStatistics.add(Float.parseFloat(df.format((timeBasedTimelinessResult))));
 
         // "数据非脆弱性":
         float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
-        dataStatistics.add(dataNonVulnerabilityResult);
+        dataStatistics.add(Float.parseFloat(df.format((dataNonVulnerabilityResult))));
 
         return dataStatistics;
-    }
+    }*/
 
     /**
     * @Author: jlzhuang
     * @Date:
-    * @Description: 九个性的数
+    * @Description: 九特性的数
     * @Version 1.0.0
     */
     @Override
@@ -236,15 +245,20 @@ public class VisualizServiceImpl implements VisualizService {
         return dataStatistics;
     }
 
-
     /**
      * @Author: jlzhuang
      * @Date:
-     * @Description: 7个性的数
+     * @Description: 7特性的数
      * @Version 1.0.0
      */
     @Override
-    public List<Float> getSevenDataStatisticsFromRedis() {
+    public List<String> getSevenDataStatisticsFromRedis() {
+        DimensionDetailResultBean dimensionDetailResultData = redisMapper.getDimensionDetailResultDataFromRedis();
+        //格式化保留两位小数
+        return formatSevenDetailDataStatistics(dimensionDetailResultData);
+    }
+    //未进行格式化的方法
+    /*public List<Float> getSevenDataStatisticsFromRedis() {
         DimensionDetailResultBean dimensionDetailResultData = redisMapper.getDimensionDetailResultDataFromRedis();
         List<Float> dataStatistics = new ArrayList<>();
         // "数据文件完备性":
@@ -280,6 +294,53 @@ public class VisualizServiceImpl implements VisualizService {
         // "数据非脆弱性":
         float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
         dataStatistics.add(dataNonVulnerabilityResult);
+
+        return dataStatistics;
+    }*/
+
+
+    /**
+    * @Author: jlzhuang
+    * @Date:
+    * @Description: 传入mysql和redis取出的DimensionDetailResultBean  然后进行格式化
+    * @Version 1.0.0
+    */
+    public List<String> formatSevenDetailDataStatistics(DimensionDetailResultBean dimensionDetailResultData) {
+        DecimalFormat df = new DecimalFormat("0.00");//定义小数保留两位不足用零填充
+        List<String> dataStatistics = new ArrayList<>();
+        // "数据文件完备性":
+        float dataFileCompletenessResult = (float)dimensionDetailResultData.getDataFileCompletenessResult() / dimensionDetailResultData.getExpectedTotalRecordAmount();
+        // "数据值完备性":
+        float dataValueCompletenessResult = (float)dimensionDetailResultData.getDataValueCompletenessResult() / dimensionDetailResultData.getTotalRecordAmountOfDataValueCompleteness();
+        //完备性
+        dataStatistics.add( df.format((dataFileCompletenessResult+dataValueCompletenessResult)/2f));
+
+        // "数据引用一致性":
+        float referentialConsistencyResult =  (float)dimensionDetailResultData.getReferentialConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfReferentialConsistency();
+        // "数据格式一致性":
+        float formatConsistencyResult = (float)dimensionDetailResultData.getFormatConsistencyResult() / dimensionDetailResultData.getTotalRecordAmountOfFormatConsistency();
+        //一致性
+        dataStatistics.add( df.format((referentialConsistencyResult+formatConsistencyResult)/2f));
+
+        // "数据记录依从性":
+        float dataRecordComplianceResult = (float)dimensionDetailResultData.getDataRecordComplianceResult() / dimensionDetailResultData.getTotalRecordAmountOfDataRecordCompliance();
+        dataStatistics.add( df.format(dataRecordComplianceResult));
+
+        // "数据范围准确性":
+        float rangeAccuracyResult = (float)dimensionDetailResultData.getRangeAccuracyResult() / dimensionDetailResultData.getTotalRecordAmountOfRangeAccuracy();
+        dataStatistics.add( df.format(rangeAccuracyResult));
+
+        // "数据记录唯一性":
+        float recordUniquenessResult = (float)dimensionDetailResultData.getRecordUniquenessResult() / dimensionDetailResultData.getTotalRecordAmountOfRecordUniqueness();
+        dataStatistics.add( df.format(recordUniquenessResult));
+
+        // "基于时间段的时效性":
+        float timeBasedTimelinessResult = (float)dimensionDetailResultData.getTimeBasedTimelinessResult() / dimensionDetailResultData.getTotalRecordAmountOfTimeBasedTimeliness();
+        dataStatistics.add( df.format((timeBasedTimelinessResult)));
+
+        // "数据非脆弱性":
+        float dataNonVulnerabilityResult = (float)dimensionDetailResultData.getDataNonVulnerabilityResult()/100;
+        dataStatistics.add( df.format(dataNonVulnerabilityResult));
 
         return dataStatistics;
     }
