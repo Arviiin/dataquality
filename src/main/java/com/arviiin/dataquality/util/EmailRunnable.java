@@ -10,15 +10,17 @@ import javax.mail.internet.MimeMessage;
 import java.util.Map;
 
 public class EmailRunnable implements Runnable {
-    private String from;
+    private String fromEmail;
+    private String toEmail;
     private JavaMailSender javaMailSender;
     private TemplateEngine templateEngine;
     private Map<String, Object> tableData;
 
-    public EmailRunnable(String from,Map<String, Object> dataMap,
+    public EmailRunnable(String fromEmail,String toEmail,Map<String, Object> dataMap,
                          JavaMailSender javaMailSender,
                          TemplateEngine templateEngine) {
-        this.from = from;
+        this.fromEmail = fromEmail;
+        this.toEmail = toEmail;
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.tableData = dataMap;
@@ -28,9 +30,8 @@ public class EmailRunnable implements Runnable {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo("jlongzhuang@163.com");
-//            helper.setTo("326012842@qq.com");
-            helper.setFrom(from);//"931639826@qq.com"
+            helper.setFrom(fromEmail);//
+            helper.setTo(toEmail);
             helper.setSubject("数据质量评价报告");
             Context ctx = new Context();
             ctx.setVariable("name", "数值质量量化分析平台用户");

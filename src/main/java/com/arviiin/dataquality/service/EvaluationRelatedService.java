@@ -18,4 +18,6 @@ public interface EvaluationRelatedService {
     Map<String,Object> getLatestEvaluationInitData();
 
     int saveEvaluationInitData(String username, String email, String evaluationName, String evaluationRemark);
+
+    int saveEvaluationInitData(String username, String fromEmail, String email, String evaluationName, String evaluationRemark);
 }

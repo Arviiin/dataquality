@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.arviiin.dataquality.mapper.EmailMapper" >
+
+    <!--    mybatis默认会把mapper.xml映射为dao的实现     -->
+
+    <insert id="saveRecordOfSendEmail" >
+        INSERT INTO
+            email
+            (from_name,from_email,to_name,to_email,createtime,updatetime)
+        VALUES
+            (#{fromName},#{fromEmail}, #{toName}, #{toEmail},#{createtime},#{updatetime})
+    </insert>
+    
+    <select id="getRecordOfSendEmail" resultType="java.util.LinkedHashMap">
+        select id,from_name as fromname,from_email as fromemail,to_name as toname,to_email as toemail,createtime as sendtime
+        from email
+    </select>
+
+</mapper>

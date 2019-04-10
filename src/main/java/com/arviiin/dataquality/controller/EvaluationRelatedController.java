@@ -1,14 +1,13 @@
 package com.arviiin.dataquality.controller;
 
 import com.arviiin.dataquality.mapper.RedisMapper;
-import com.arviiin.dataquality.model.DimensionDetailResultBean;
-import com.arviiin.dataquality.model.DimensionScore;
-import com.arviiin.dataquality.model.JsonResult;
-import com.arviiin.dataquality.model.WeightBean;
+import com.arviiin.dataquality.model.*;
 import com.arviiin.dataquality.service.DimensionResultService;
 import com.arviiin.dataquality.service.EvaluationRelatedService;
+import com.arviiin.dataquality.service.UserService;
 import com.arviiin.dataquality.service.WeightService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,20 +29,28 @@ public class EvaluationRelatedController extends BaseController{
     @Autowired
     private RedisMapper redisMapper;
 
+    @Autowired
+    private UserService userService;
+
+    //从配置文件里面取发送邮件的地址
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     @RequestMapping(value = "/data/evaluation_init", method = RequestMethod.POST)//讲道理更新应该用put,但前台用put过于麻烦，就用post了
     public ResponseEntity<JsonResult> saveEvaluationInitData (@RequestParam("username") String username,
-                                                              @RequestParam(name = "email",required = false,defaultValue = "931639826@qq.com") String email,
-                                                      @RequestParam("evaluation_name") String evaluationName,
-                                                      @RequestParam("evaluation_remark") String evaluationRemark){
+                                                              @RequestParam("email") String email,
+                                                              @RequestParam("evaluation_name") String evaluationName,
+                                                              @RequestParam("evaluation_remark") String evaluationRemark){
         JsonResult r = new JsonResult();//不管是地址栏里的参数，还是表单里面的参数都可以用@RequestParam取得
         try {
-            int ret = -1;
-            if ("".equals(email) || email == null){
-                ret = evaluationRelatedService.saveEvaluationInitData(username,evaluationName,evaluationRemark);
-            }else {
-                ret = evaluationRelatedService.saveEvaluationInitData(username,email,evaluationName,evaluationRemark);
+            int ret;
+            if ("".equals(email) || email == null){//如果不输入也就是空的情况，默认取当前用户的邮箱
+                User user = userService.getUserByName(username);
+                String userEmail = user.getEmail();
+                ret = evaluationRelatedService.saveEvaluationInitData(username,fromEmail,userEmail,evaluationName,evaluationRemark);
+            }else {//如果输入了，因为前台已经校验过格式，所以直接调用
+                ret = evaluationRelatedService.saveEvaluationInitData(username,fromEmail,email,evaluationName,evaluationRemark);
             }
-
             //ret 1 为正常
             if (ret != 1) {
                 r.setResult(ret);

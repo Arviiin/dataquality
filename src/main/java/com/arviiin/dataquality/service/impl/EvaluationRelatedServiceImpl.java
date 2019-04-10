@@ -48,4 +48,13 @@ public class EvaluationRelatedServiceImpl implements EvaluationRelatedService {
         int res = evaluationRelatedMapper.save4ArgsEvaluationInitData(username,email, evaluationName, evaluationRemark,createtime,updatetime);
         return res;
     }
+
+    @Override
+    public int saveEvaluationInitData(String username, String fromEmail, String email, String evaluationName, String evaluationRemark) {
+        Timestamp createtime = new Timestamp(System.currentTimeMillis());
+        Timestamp updatetime = new Timestamp(System.currentTimeMillis());
+
+        int res = evaluationRelatedMapper.save5ArgsEvaluationInitData(username,fromEmail,email, evaluationName, evaluationRemark,createtime,updatetime);
+        return res;
+    }
 }

@@ -32,4 +32,12 @@ public interface EvaluationRelatedMapper {
                                     @Param("evaluationRemark") String evaluationRemark,
                                     @Param("createtime") Timestamp createtime,
                                     @Param("updatetime") Timestamp updatetime);
+
+    int save5ArgsEvaluationInitData(@Param("username") String username,
+                                    @Param("fromEmail") String fromEmail,
+                                    @Param("email") String email,
+                                    @Param("evaluationName") String evaluationName,
+                                    @Param("evaluationRemark") String evaluationRemark,
+                                    @Param("createtime") Timestamp createtime,
+                                    @Param("updatetime") Timestamp updatetime);
 }

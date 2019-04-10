@@ -1,5 +1,6 @@
 package com.arviiin.dataquality.service.impl;
 
+import com.arviiin.dataquality.mapper.EmailMapper;
 import com.arviiin.dataquality.mapper.RedisMapper;
 import com.arviiin.dataquality.model.DimensionDetailResultBean;
 import com.arviiin.dataquality.model.DimensionScore;
@@ -17,6 +18,7 @@ import org.thymeleaf.TemplateEngine;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -43,8 +45,16 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private RedisMapper redisMapper;
 
+    @Autowired
+    private EmailMapper emailMapper;
+
+    //从配置文件里面取发送邮件的地址
     @Value("${spring.mail.username}")
-    private String from;
+    private String fromEmail;
+
+    private String fromName = "数值质量量化分析平台";
+
+    private String toEmail;
 
     @Override
     public String sendEmail() {
@@ -56,7 +66,7 @@ public class EmailServiceImpl implements EmailService {
             dataMap.put("evaluationName",evaluationInitMap.get("evaluation_name"));
             dataMap.put("evaluationRemark",evaluationInitMap.get("evaluation_remark"));
             dataMap.put("evaluationRemarkUsername",evaluationInitMap.get("evaluation_username"));
-
+            toEmail = (String) evaluationInitMap.get("email");
             //权重放进去
             WeightBean weightResultBean = weightService.getWeightResult();//取出权重
             Map<String,String> weightResult = weightService.formatWeightResultBean(weightResultBean);//取出权重
@@ -96,10 +106,28 @@ public class EmailServiceImpl implements EmailService {
             String minRatio = dimensionResultService.getDimensionResultMinRatio(dimensionDetailResultBean);
             dataMap.put("suggestion","数据质量评价结果为："+evaluationLevel+"。良率中最差的质量维度为："+minRatio+
                     "。建议仔细分析此质量维度差的原因。");
-            executorService.execute(new EmailRunnable(from,dataMap, javaMailSender, templateEngine));
+
+
+            //执行子线程发送邮件
+            executorService.execute(new EmailRunnable(fromEmail,toEmail,dataMap, javaMailSender, templateEngine));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "ok";
+    }
+
+    @Override
+    public void saveRecordOfSendEmail(Map<String, Object> latestEvaluationInitData) {
+        toEmail = (String) latestEvaluationInitData.get("email");
+        String toName = (String) latestEvaluationInitData.get("evaluation_username");
+        Timestamp createtime = new Timestamp(System.currentTimeMillis());
+        Timestamp updatetime = new Timestamp(System.currentTimeMillis());
+        emailMapper.saveRecordOfSendEmail(fromName,fromEmail,toName,toEmail,createtime,updatetime);
+    }
+
+    @Override
+    public List<Map<String, Object>> getRecordOfSendEmail() {
+        return emailMapper.getRecordOfSendEmail();
     }
 }

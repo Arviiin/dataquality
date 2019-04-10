@@ -7,10 +7,12 @@ import com.arviiin.dataquality.model.WeightBean;
 import com.arviiin.dataquality.service.DataQualityCalculationService;
 import com.arviiin.dataquality.service.DimensionResultService;
 import com.arviiin.dataquality.service.EmailService;
+import com.arviiin.dataquality.service.EvaluationRelatedService;
 import org.apache.ibatis.jdbc.RuntimeSqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -25,6 +27,12 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private EvaluationRelatedService evaluationRelatedService;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
     public Double dimensionWeightCalculation(DimensionResultBean dimensionResultData, WeightBean weightBean) {
@@ -154,16 +162,15 @@ public class DataQualityCalculationServiceImpl implements DataQualityCalculation
         }
         //存入redis
         dimensionResultService.saveDimensionScoreToRedis(dimensionScore);
-        /*double result1 = (dataFileCompletenessResult+dataValueCompletenessResult)/2.0 * weightBean.getCompleteness()  +
-                (referentialConsistencyResult+formatConsistencyResult)/2.0 * weightBean.getConsistency() +
-                dataRecordComplianceResult * weightBean.getCompliance() +
-                rangeAccuracyResult * weightBean.getAccuracy() +
-                recordUniquenessResult * weightBean.getUniqueness() +
-                timeBasedTimelinessResult * weightBean.getTimeliness() +
-                dataNonVulnerabilityResult * weightBean.getVulnerability();*/
 
-        //开启新线程发送邮件  考虑使用队列完成数据库存储和邮件发送
-        emailService.sendEmail();
+        //使用kafka队列通知完成以下事情
+        // 1.开启新线程发送邮件
+        // 2.将发送邮件的记录保存到数据库中
+        kafkaTemplate.send("email","emailSignal","true");
+        //emailService.sendEmail();
+        //Map<String, Object> latestEvaluationInitData = evaluationRelatedService.getLatestEvaluationInitData();
+        //emailService.saveRecordOfSendEmail(latestEvaluationInitData);
+
         return result;
     }
 
