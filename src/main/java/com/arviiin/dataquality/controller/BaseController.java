@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
 
+/**
+ * Controller的基类，所有Controller都应该继承该类
+ */
 public abstract class BaseController{
 	public final static String SUCCESS_CODE = "0";
 	public final  static String  FAIL_CODE = "1";

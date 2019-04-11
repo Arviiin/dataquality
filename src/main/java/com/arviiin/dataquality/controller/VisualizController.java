@@ -55,8 +55,18 @@ public class VisualizController extends BaseController{
     @GetMapping("/chart/mixChart")
     public Map<String,Object> getMixChartData() {
         Map<String, Object> map = new LinkedHashMap<>();
-        DimensionDetailResultBean dimensionDetailResultData = dimensionResultService.getDimensionDetailResultData();
+        DimensionDetailResultBean dimensionDetailResult = dimensionResultService.getDimensionDetailResultData();
+        DimensionDetailResultBean dimensionDetailResultData = dimensionResultService.transformDimensionDetailResult(dimensionDetailResult);
+        map.put("resultData", dimensionDetailResultData);
+        map.put("code", 200);
+        return map;
+    }
 
+    @GetMapping("/chart/lineChart")
+    public Map<String,Object> getLineChartData() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        DimensionDetailResultBean dimensionDetailResult = dimensionResultService.getDimensionDetailResultData();
+        DimensionDetailResultBean dimensionDetailResultData = dimensionResultService.transformDimensionDetailResult(dimensionDetailResult);
         map.put("resultData", dimensionDetailResultData);
         map.put("code", 200);
         return map;

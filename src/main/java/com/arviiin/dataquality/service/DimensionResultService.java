@@ -28,5 +28,10 @@ public interface DimensionResultService {
 
     String getDimensionEvaluationLevel(DimensionScore dimensionScore);
 
-
+    /**
+     * 把结果中的保密性分数进行转变
+     * @param dimensionDetailResult
+     * @return
+     */
+    DimensionDetailResultBean transformDimensionDetailResult(DimensionDetailResultBean dimensionDetailResult);
 }

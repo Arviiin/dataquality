@@ -270,4 +270,17 @@ public class DimensionResultServiceImpl implements DimensionResultService {
         return "不合格";
     }
 
+    /**
+     * 取唯一性的总数，作为保密性的总数
+     * @param dimensionDetailResult
+     * @return
+     */
+    @Override
+    public DimensionDetailResultBean transformDimensionDetailResult(DimensionDetailResultBean dimensionDetailResult) {
+        int dataNonVulnerabilityResult = dimensionDetailResult.getDataNonVulnerabilityResult();
+        int totalRecordAmountOfRecordUniqueness = dimensionDetailResult.getTotalRecordAmountOfRecordUniqueness();
+        dimensionDetailResult.setDataNonVulnerabilityResult(Math.round(dataNonVulnerabilityResult*totalRecordAmountOfRecordUniqueness/100));
+        return dimensionDetailResult;
+    }
+
 }

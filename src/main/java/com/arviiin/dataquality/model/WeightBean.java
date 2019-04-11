@@ -1,6 +1,7 @@
 package com.arviiin.dataquality.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class WeightBean implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -14,6 +15,25 @@ public class WeightBean implements Serializable {
     private Double vulnerability;
 
     private String type;
+
+    private Timestamp createtime;
+    private Timestamp updatetime;
+
+    public Timestamp getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Timestamp createtime) {
+        this.createtime = createtime;
+    }
+
+    public Timestamp getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Timestamp updatetime) {
+        this.updatetime = updatetime;
+    }
 
     public String getType() {
         return type;
@@ -97,6 +117,9 @@ public class WeightBean implements Serializable {
                 ", uniqueness=" + uniqueness +
                 ", timeliness=" + timeliness +
                 ", vulnerability=" + vulnerability +
+                ", type='" + type + '\'' +
+                ", createtime=" + createtime +
+                ", updatetime=" + updatetime +
                 '}';
     }
 }

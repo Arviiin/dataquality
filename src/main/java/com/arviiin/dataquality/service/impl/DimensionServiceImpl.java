@@ -74,7 +74,10 @@ public class DimensionServiceImpl implements DimensionService {
      */
     @Override
     public Integer getReferentialConsistencyResult(DimensionBean dimensionBean) {
-        if (dimensionBean.getTablename().contains(":") && dimensionBean.getColumnname().contains(":")){
+        if ((dimensionBean.getTablename().contains(":") && dimensionBean.getColumnname().contains(":")) ||
+            (dimensionBean.getTablename().contains("：") && dimensionBean.getColumnname().contains("：")) ||
+            (dimensionBean.getTablename().contains(":") && dimensionBean.getColumnname().contains("：")) ||
+            (dimensionBean.getTablename().contains("：") && dimensionBean.getColumnname().contains("："))){
             /*
                 SELECT count(*)  FROM roles_user
                 WHERE rid not in (SELECT id FROM roles)
@@ -87,7 +90,7 @@ public class DimensionServiceImpl implements DimensionService {
             String referenceFiled = split1[0];//引用字段
             String beReferenceFiled = split1[1];//被引用字段
             return dimensionTwoMapper.getReferentialConsistencyResult(referenceTable, referenceFiled,beReferenceFiled,beReferenceTable);
-        }else {
+        }else if (dimensionBean.getRule().contains("、")){
             //考虑到参照引用的可能不是表中的，而是几个固定字段，我们可以填写相应的字段范围
             String rule = dimensionBean.getRule();
             String[] split = rule.split("、");
@@ -103,6 +106,7 @@ public class DimensionServiceImpl implements DimensionService {
             }
             return cnt;
         }
+        return 0;
     }
 
     @Override
@@ -192,15 +196,15 @@ public class DimensionServiceImpl implements DimensionService {
         String type = dimensionBean.getRule();
         int dataNonVulnerability;
         if ("明文".equals(type))
-            dataNonVulnerability = 50;
+            dataNonVulnerability = 75;
         else if ("加盐".equals(type))
-            dataNonVulnerability = 70;
+            dataNonVulnerability = 85;
         else if ("MD5等类型".equals(type))
-            dataNonVulnerability = 80;
-        else if ("组合复杂".equals(type))
             dataNonVulnerability = 90;
+        else if ("组合复杂".equals(type))
+            dataNonVulnerability = 95;
         else
-            dataNonVulnerability = 60;
+            dataNonVulnerability = 80;
         return dataNonVulnerability;
     }
 
